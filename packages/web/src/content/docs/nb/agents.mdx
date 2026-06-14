@@ -15,7 +15,7 @@ Du kan bytte mellom agenter under en økt eller påkalle dem med `@`-omtalen.
 
 ## Typer
 
-Det er to typer agenter i OpenCode; primære agenter og underagenter.
+Det er to typer agenter i Daemon Protocol; primære agenter og underagenter.
 
 ---
 
@@ -27,7 +27,7 @@ Primæragenter er de viktigste assistentene du samhandler direkte med. Du kan bl
 Du kan bruke **Tab**-tasten for å bytte mellom primære agenter under en økt.
 :::
 
-OpenCode kommer med to innebygde primære agenter, **Build** og **Plan**. Vi ser nærmere på disse nedenfor.
+Daemon Protocol kommer med to innebygde primære agenter, **Build** og **Plan**. Vi ser nærmere på disse nedenfor.
 
 ---
 
@@ -35,13 +35,13 @@ OpenCode kommer med to innebygde primære agenter, **Build** og **Plan**. Vi ser
 
 Underagenter er spesialiserte assistenter som primære agenter kan påkalle for spesifikke oppgaver. Du kan også starte dem manuelt ved å **@ nevne** dem i meldingene dine.
 
-OpenCode kommer med tre innebygde underagenter, **General**, **Explore** og **Scout**. Vi skal se på dette nedenfor.
+Daemon Protocol kommer med tre innebygde underagenter, **General**, **Explore** og **Scout**. Vi skal se på dette nedenfor.
 
 ---
 
 ## Innebygd
 
-OpenCode kommer med to innebygde primære agenter og tre innebygde underagenter.
+Daemon Protocol kommer med to innebygde primære agenter og tre innebygde underagenter.
 
 ---
 
@@ -87,7 +87,7 @@ En rask, skrivebeskyttet agent for å utforske kodebaser. Kan ikke endre filer. 
 
 _Modus_: `subagent`
 
-En skrivebeskyttet agent for ekstern dokumentasjon og forskning på avhengigheter. Bruk denne når du trenger å klone et avhengighetsrepo inn i OpenCode sin administrerte cache, inspisere kildekoden til et bibliotek eller kryssjekke lokal kode mot upstream-implementasjoner uten å endre arbeidsområdet ditt.
+En skrivebeskyttet agent for ekstern dokumentasjon og forskning på avhengigheter. Bruk denne når du trenger å klone et avhengighetsrepo inn i Daemon Protocol sin administrerte cache, inspisere kildekoden til et bibliotek eller kryssjekke lokal kode mot upstream-implementasjoner uten å endre arbeidsområdet ditt.
 
 ---
 
@@ -147,7 +147,7 @@ Konfigurer agenter i konfigurasjonsfilen `opencode.json`:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "build": {
       "mode": "primary",
@@ -284,7 +284,7 @@ Temperaturverdier varierer vanligvis fra 0,0 til 1,0:
 }
 ```
 
-Hvis ingen temperatur er spesifisert, bruker OpenCode modellspesifikke standardinnstillinger; typisk 0 for de fleste modeller, 0,55 for Qwen-modeller.
+Hvis ingen temperatur er spesifisert, bruker Daemon Protocol modellspesifikke standardinnstillinger; typisk 0 for de fleste modeller, 0,55 for Qwen-modeller.
 
 ---
 
@@ -344,7 +344,7 @@ Spesifiser en tilpasset systemmeldingsfil for denne agenten med `prompt`-konfigu
 }
 ```
 
-Denne banen er i forhold til hvor konfigurasjonsfilen er plassert. Så dette fungerer for både den globale OpenCode-konfigurasjonen og den prosjektspesifikke konfigurasjonen.
+Denne banen er i forhold til hvor konfigurasjonsfilen er plassert. Så dette fungerer for både den globale Daemon Protocol-konfigurasjonen og den prosjektspesifikke konfigurasjonen.
 
 ---
 
@@ -366,7 +366,7 @@ Hvis du ikke spesifiserer en modell, bruker primæragenter [modell globalt konfi
 }
 ```
 
-Modellen ID i OpenCode-konfigurasjonen din bruker formatet `provider/model-id`. For eksempel, hvis du bruker [OpenCode Zen](/docs/zen), vil du bruke `opencode/gpt-5.1-codex` for GPT 5.1 Codex.
+Modellen ID i Daemon Protocol-konfigurasjonen din bruker formatet `provider/model-id`. For eksempel, hvis du bruker [Daemon Zen](/docs/zen), vil du bruke `opencode/gpt-5.1-codex` for GPT 5.1 Codex.
 
 ---
 
@@ -376,7 +376,7 @@ Kontroller hvilke verktøy som er tilgjengelige i denne agenten med `tools`-konf
 
 ```json title="opencode.json" {3-6,9-12}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "tools": {
     "write": true,
     "bash": true
@@ -400,7 +400,7 @@ Du kan også bruke jokertegn for å kontrollere flere verktøy samtidig. For eks
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "readonly": {
       "tools": {
@@ -427,7 +427,7 @@ Du kan konfigurere tillatelser for å administrere hvilke handlinger en agent ka
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "deny"
   }
@@ -438,7 +438,7 @@ Du kan overstyre disse tillatelsene per agent.
 
 ```json title="opencode.json" {3-5,8-10}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "deny"
   },
@@ -475,7 +475,7 @@ Du kan angi tillatelser for spesifikke bash-kommandoer.
 
 ```json title="opencode.json" {7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -493,7 +493,7 @@ Dette kan ta et globmønster.
 
 ```json title="opencode.json" {7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -511,7 +511,7 @@ Siden den siste samsvarsregelen har forrang, setter du jokertegnet `*` først og
 
 ```json title="opencode.json" {8}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -704,7 +704,7 @@ Her er noen vanlige bruksområder for forskjellige agenter.
 Her er noen eksempler på agenter du kan finne nyttige.
 
 :::tip
-Har du en agent du vil dele? [Send inn en PR](https://github.com/anomalyco/opencode).
+Har du en agent du vil dele? [Send inn en PR](https://github.com/daemon-blockint-tech/daemoncode).
 :::
 
 ---

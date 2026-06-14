@@ -15,7 +15,7 @@ description: เอเจนต์พิเศษและปรับแต่�
 
 ## ประเภท
 
-OpenCode มีเอเจนต์สองประเภท: **Primary Agent** (เอเจนต์หลัก) และ **Subagent** (เอเจนต์ย่อย)
+Daemon Protocol มีเอเจนต์สองประเภท: **Primary Agent** (เอเจนต์หลัก) และ **Subagent** (เอเจนต์ย่อย)
 
 ---
 
@@ -27,7 +27,7 @@ Primary Agent คือผู้ช่วยหลักที่คุณคุ
 **Tab** จะเก็บประวัติการสนทนาไว้เมื่อสลับระหว่างเอเจนต์
 :::
 
-OpenCode มีเอเจนต์หลักในตัวได้แก่ **Build** และ **Plan**
+Daemon Protocol มีเอเจนต์หลักในตัวได้แก่ **Build** และ **Plan**
 ดูรายละเอียดด้านล่าง
 
 ---
@@ -36,13 +36,13 @@ OpenCode มีเอเจนต์หลักในตัวได้แก�
 
 Subagent คือผู้ช่วยเฉพาะทางที่ Primary Agent สามารถเรียกใช้งานได้ หรือคุณสามารถเรียกใช้โดยตรงโดยพิมพ์ **@** ตามด้วยชื่อเอเจนต์ในข้อความของคุณ
 
-OpenCode มี subagent ในตัวได้แก่ **General**, **Explore** และ **Scout** ดูรายละเอียดด้านล่าง
+Daemon Protocol มี subagent ในตัวได้แก่ **General**, **Explore** และ **Scout** ดูรายละเอียดด้านล่าง
 
 ---
 
 ## บิวท์อิน
 
-OpenCode มาพร้อมกับเอเจนต์หลัก 2 ตัวและ subagent ในตัว 3 ตัว
+Daemon Protocol มาพร้อมกับเอเจนต์หลัก 2 ตัวและ subagent ในตัว 3 ตัว
 
 ---
 
@@ -88,7 +88,7 @@ _Mode_: `subagent`
 
 _Mode_: `subagent`
 
-เอเจนต์แบบอ่านอย่างเดียวสำหรับค้นคว้าเอกสารภายนอกและ dependency ใช้สิ่งนี้เมื่อคุณต้องการ clone repository ของ dependency เข้าไปใน cache ที่ OpenCode จัดการให้, ตรวจสอบ source code ของไลบรารี, หรือเทียบโค้ดในเครื่องกับ implementation จาก upstream โดยไม่แก้ไข workspace ของคุณ
+เอเจนต์แบบอ่านอย่างเดียวสำหรับค้นคว้าเอกสารภายนอกและ dependency ใช้สิ่งนี้เมื่อคุณต้องการ clone repository ของ dependency เข้าไปใน cache ที่ Daemon Protocol จัดการให้, ตรวจสอบ source code ของไลบรารี, หรือเทียบโค้ดในเครื่องกับ implementation จาก upstream โดยไม่แก้ไข workspace ของคุณ
 
 ---
 
@@ -146,7 +146,7 @@ _Mode_: `primary`
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "build": {
       "mode": "primary",
@@ -283,7 +283,7 @@ Provide constructive feedback without making direct changes.
 }
 ```
 
-หมายเหตุ: OpenCode ค่าเริ่มต้นคือ 0 สำหรับโมเดลส่วนใหญ่ และ 0.55 สำหรับโมเดล Qwen
+หมายเหตุ: Daemon Protocol ค่าเริ่มต้นคือ 0 สำหรับโมเดลส่วนใหญ่ และ 0.55 สำหรับโมเดล Qwen
 
 ---
 
@@ -352,7 +352,7 @@ Provide constructive feedback without making direct changes.
 ใช้ตัวเลือก `model` เพื่อกำหนดโมเดลเฉพาะสำหรับเอเจนต์นี้ มีประโยชน์เมื่อต้องการใช้โมเดลที่เชี่ยวชาญเฉพาะด้าน หรือโมเดลที่มี Context window ขนาดใหญ่สำหรับการตรวจสอบ codebase
 
 :::tip
-หากไม่ได้ระบุโมเดล เอเจนต์จะใช้ [โมเดลเริ่มต้น](/docs/config#models) ของ OpenCode
+หากไม่ได้ระบุโมเดล เอเจนต์จะใช้ [โมเดลเริ่มต้น](/docs/config#models) ของ Daemon Protocol
 :::
 
 ```json title="opencode.json"
@@ -375,7 +375,7 @@ ID ของโมเดลใช้รูปแบบ `provider/model-id`
 
 ```json title="opencode.json" {3-6,9-12}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "tools": {
     "write": true,
     "bash": true
@@ -399,7 +399,7 @@ ID ของโมเดลใช้รูปแบบ `provider/model-id`
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "readonly": {
       "tools": {
@@ -426,7 +426,7 @@ ID ของโมเดลใช้รูปแบบ `provider/model-id`
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "deny"
   }
@@ -437,7 +437,7 @@ ID ของโมเดลใช้รูปแบบ `provider/model-id`
 
 ```json title="opencode.json" {3-5,8-10}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "deny"
   },
@@ -474,7 +474,7 @@ Only analyze code and suggest changes.
 
 ```json title="opencode.json" {7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -492,7 +492,7 @@ Only analyze code and suggest changes.
 
 ```json title="opencode.json" {7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -509,7 +509,7 @@ Only analyze code and suggest changes.
 
 ```json title="opencode.json" {8}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "build": {
       "permission": {
@@ -696,7 +696,7 @@ opencode agent create
 นี่คือตัวอย่างเอเจนต์ที่คุณอาจพบว่ามีประโยชน์
 
 :::tip
-คุณมีเอเจนต์เจ๋งๆ ที่ต้องการแบ่งปันหรือไม่? [ส่ง PR มาที่นี่](https://github.com/anomalyco/opencode)
+คุณมีเอเจนต์เจ๋งๆ ที่ต้องการแบ่งปันหรือไม่? [ส่ง PR มาที่นี่](https://github.com/daemon-blockint-tech/daemoncode)
 :::
 
 ### Docs Writer

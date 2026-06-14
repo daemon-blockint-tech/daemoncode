@@ -3,7 +3,7 @@ title: خوادم MCP
 description: أضف أدوات MCP محلية وبعيدة.
 ---
 
-يمكنك إضافة أدوات خارجية إلى OpenCode باستخدام _Model Context Protocol_، أو MCP. يدعم OpenCode خوادم محلية وبعيدة.
+يمكنك إضافة أدوات خارجية إلى Daemon Protocol باستخدام _Model Context Protocol_، أو MCP. يدعم Daemon Protocol خوادم محلية وبعيدة.
 
 بعد إضافتها، تصبح أدوات MCP متاحة تلقائيا للـ LLM إلى جانب الأدوات المضمنة.
 
@@ -23,11 +23,11 @@ description: أضف أدوات MCP محلية وبعيدة.
 
 ## التمكين
 
-يمكنك تعريف خوادم MCP في [إعدادات OpenCode](https://opencode.ai/docs/config/) ضمن `mcp`. أضف كل خادم MCP باسم فريد. ويمكنك الإشارة إلى ذلك الخادم بالاسم عند توجيه الطلب إلى الـ LLM.
+يمكنك تعريف خوادم MCP في [إعدادات Daemon Protocol](https://daemonprotocol.com/docs/config/) ضمن `mcp`. أضف كل خادم MCP باسم فريد. ويمكنك الإشارة إلى ذلك الخادم بالاسم عند توجيه الطلب إلى الـ LLM.
 
 ```jsonc title="opencode.jsonc" {6}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "name-of-mcp-server": {
       // ...
@@ -52,7 +52,7 @@ description: أضف أدوات MCP محلية وبعيدة.
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "jira": {
       "type": "remote",
@@ -73,7 +73,7 @@ description: أضف أدوات MCP محلية وبعيدة.
 
 ```jsonc title="opencode.jsonc" {15}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "my-local-mcp-server": {
       "type": "local",
@@ -94,7 +94,7 @@ description: أضف أدوات MCP محلية وبعيدة.
 
 ```jsonc title="opencode.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "mcp_everything": {
       "type": "local",
@@ -132,7 +132,7 @@ use the mcp_everything tool to add the number 3 and 4
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "my-remote-mcp": {
       "type": "remote",
@@ -165,7 +165,7 @@ use the mcp_everything tool to add the number 3 and 4
 
 ## OAuth
 
-يتولى OpenCode تلقائيا معالجة مصادقة OAuth لخوادم MCP البعيدة. عندما يتطلب خادم ما المصادقة، سيقوم OpenCode بما يلي:
+يتولى Daemon Protocol تلقائيا معالجة مصادقة OAuth لخوادم MCP البعيدة. عندما يتطلب خادم ما المصادقة، سيقوم Daemon Protocol بما يلي:
 
 1. اكتشاف استجابة 401 وبدء تدفق OAuth
 2. استخدام **Dynamic Client Registration (RFC 7591)** إذا كان الخادم يدعمه
@@ -179,7 +179,7 @@ use the mcp_everything tool to add the number 3 and 4
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "my-oauth-server": {
       "type": "remote",
@@ -189,7 +189,7 @@ use the mcp_everything tool to add the number 3 and 4
 }
 ```
 
-إذا كان الخادم يتطلب المصادقة، فسيطلب منك OpenCode المصادقة عند أول محاولة لاستخدامه. وإذا لم يحدث ذلك، يمكنك [تشغيل التدفق يدويا](#authenticating) باستخدام `opencode mcp auth <server-name>`.
+إذا كان الخادم يتطلب المصادقة، فسيطلب منك Daemon Protocol المصادقة عند أول محاولة لاستخدامه. وإذا لم يحدث ذلك، يمكنك [تشغيل التدفق يدويا](#authenticating) باستخدام `opencode mcp auth <server-name>`.
 
 ---
 
@@ -199,7 +199,7 @@ use the mcp_everything tool to add the number 3 and 4
 
 ```json title="opencode.json" {7-11}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "my-oauth-server": {
       "type": "remote",
@@ -238,7 +238,7 @@ opencode mcp list
 opencode mcp logout my-oauth-server
 ```
 
-سيفتح أمر `mcp auth` متصفحك للتفويض. بعد إكمال التفويض، سيخزّن OpenCode الرموز بشكل آمن في `~/.local/share/opencode/mcp-auth.json`.
+سيفتح أمر `mcp auth` متصفحك للتفويض. بعد إكمال التفويض، سيخزّن Daemon Protocol الرموز بشكل آمن في `~/.local/share/opencode/mcp-auth.json`.
 
 ---
 
@@ -248,7 +248,7 @@ opencode mcp logout my-oauth-server
 
 ```json title="opencode.json" {7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "my-api-key-server": {
       "type": "remote",
@@ -291,7 +291,7 @@ opencode mcp debug my-oauth-server
 
 ## الإدارة
 
-تتوفر خوادم MCP لديك كأدوات داخل OpenCode إلى جانب الأدوات المضمنة. لذا يمكنك إدارتها عبر إعدادات OpenCode مثل أي أداة أخرى.
+تتوفر خوادم MCP لديك كأدوات داخل Daemon Protocol إلى جانب الأدوات المضمنة. لذا يمكنك إدارتها عبر إعدادات Daemon Protocol مثل أي أداة أخرى.
 
 ---
 
@@ -301,7 +301,7 @@ opencode mcp debug my-oauth-server
 
 ```json title="opencode.json" {14}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "my-mcp-foo": {
       "type": "local",
@@ -322,7 +322,7 @@ opencode mcp debug my-oauth-server
 
 ```json title="opencode.json" {14}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "my-mcp-foo": {
       "type": "local",
@@ -352,7 +352,7 @@ opencode mcp debug my-oauth-server
 
 ```json title="opencode.json" {11, 14-18}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "my-mcp": {
       "type": "local",
@@ -406,7 +406,7 @@ opencode mcp debug my-oauth-server
 
 ```json title="opencode.json" {4-8}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "sentry": {
       "type": "remote",
@@ -423,7 +423,7 @@ opencode mcp debug my-oauth-server
 opencode mcp auth sentry
 ```
 
-سيؤدي ذلك إلى فتح نافذة متصفح لإكمال تدفق OAuth وربط OpenCode بحساب Sentry الخاص بك.
+سيؤدي ذلك إلى فتح نافذة متصفح لإكمال تدفق OAuth وربط Daemon Protocol بحساب Sentry الخاص بك.
 
 بعد المصادقة، يمكنك استخدام أدوات Sentry في طلباتك للاستعلام عن القضايا والمشاريع وبيانات الأخطاء.
 
@@ -439,7 +439,7 @@ Show me the latest unresolved issues in my project. use sentry
 
 ```json title="opencode.json" {4-7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "context7": {
       "type": "remote",
@@ -453,7 +453,7 @@ Show me the latest unresolved issues in my project. use sentry
 
 ```json title="opencode.json" {7-9}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "context7": {
       "type": "remote",
@@ -488,7 +488,7 @@ When you need to search docs, use `context7` tools.
 
 ```json title="opencode.json" {4-7}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {
     "gh_grep": {
       "type": "remote",

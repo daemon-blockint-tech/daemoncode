@@ -1,19 +1,19 @@
 ---
 title: Konfiguration
-description: Verwenden Sie die Konfiguration OpenCode JSON.
+description: Verwenden Sie die Konfiguration Daemon Protocol JSON.
 ---
 
-Sie können OpenCode mithilfe einer JSON-Konfigurationsdatei konfigurieren.
+Sie können Daemon Protocol mithilfe einer JSON-Konfigurationsdatei konfigurieren.
 
 ---
 
 ## Format
 
-OpenCode unterstützt die Formate **JSON** und **JSONC** (JSON mit Kommentaren).
+Daemon Protocol unterstützt die Formate **JSON** und **JSONC** (JSON mit Kommentaren).
 
 ```jsonc title="opencode.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   // Theme configuration
   "theme": "opencode",
   "model": "anthropic/claude-sonnet-4-5",
@@ -95,7 +95,7 @@ Sie können bestimmte Server in Ihrer lokalen Konfiguration aktivieren:
 
 ### Global
 
-Platzieren Sie Ihre globale OpenCode-Konfiguration in `~/.config/opencode/opencode.json`. Verwenden Sie die globale Konfiguration für benutzerweite Einstellungen wie Themen, Anbieter oder Tastenkombinationen.
+Platzieren Sie Ihre globale Daemon Protocol-Konfiguration in `~/.config/opencode/opencode.json`. Verwenden Sie die globale Konfiguration für benutzerweite Einstellungen wie Themen, Anbieter oder Tastenkombinationen.
 
 Die globale Konfiguration überschreibt die Standardeinstellungen der Remote-Organisation.
 
@@ -109,7 +109,7 @@ Fügen Sie `opencode.json` in Ihrem Projektstamm hinzu. Die Projektkonfiguration
 Platzieren Sie die projektspezifische Konfiguration im Stammverzeichnis Ihres Projekts.
 :::
 
-Wenn OpenCode gestartet wird, sucht es im aktuellen Verzeichnis nach einer Konfigurationsdatei oder durchsucht das nächstgelegene Git-Verzeichnis.
+Wenn Daemon Protocol gestartet wird, sucht es im aktuellen Verzeichnis nach einer Konfigurationsdatei oder durchsucht das nächstgelegene Git-Verzeichnis.
 
 Dies kann auch sicher in Git eingecheckt werden und dasselbe Schema wie das globale verwenden.
 
@@ -146,7 +146,7 @@ Das benutzerdefinierte Verzeichnis wird nach den Verzeichnissen global config un
 
 ## Schema
 
-Die Konfigurationsdatei verfügt über ein Schema, das in [**`opencode.ai/config.json`**](https://opencode.ai/config.json) definiert ist.
+Die Konfigurationsdatei verfügt über ein Schema, das in [**`daemonprotocol.com/config.json`**](https://daemonprotocol.com/config.json) definiert ist.
 
 Ihr Editor sollte in der Lage sein, basierend auf dem Schema zu validieren und automatisch zu vervollständigen.
 
@@ -158,7 +158,7 @@ Sie können TUI-spezifische Einstellungen über die Option `tui` konfigurieren.
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "tui": {
     "scroll_speed": 3,
     "scroll_acceleration": {
@@ -185,7 +185,7 @@ Sie können Servereinstellungen für die Befehle `opencode serve` und `opencode 
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "server": {
     "port": 4096,
     "hostname": "0.0.0.0",
@@ -200,7 +200,7 @@ Verfügbare Optionen:
 
 - `port` – Port zum Abhören.
 - `hostname` – Hostname zum Abhören. Wenn `mdns` aktiviert ist und kein Hostname festgelegt ist, wird standardmäßig `0.0.0.0` verwendet.
-- `mdns` – mDNS-Diensterkennung aktivieren. Dadurch können andere Geräte im Netzwerk Ihres OpenCode-Servers erkannt werden.
+- `mdns` – mDNS-Diensterkennung aktivieren. Dadurch können andere Geräte im Netzwerk Ihres Daemon Protocol-Servers erkannt werden.
 - `mdnsDomain` – Benutzerdefinierter Domänenname für den mDNS-Dienst. Standardmäßig ist `opencode.local`. Nützlich für die Ausführung mehrerer Instanzen im selben Netzwerk.
 - `cors` – Zusätzliche Ursprünge, um CORS zu ermöglichen, wenn der HTTP-Server von einem browserbasierten Client aus verwendet wird. Die Werte müssen vollständige Ursprünge haben (Schema + Host + optionaler Port), z. B. `https://app.example.com`.
 
@@ -214,7 +214,7 @@ Sie können die Tools, die ein LLM verwenden kann, über die Option `tools` verw
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "tools": {
     "write": false,
     "bash": false
@@ -228,24 +228,24 @@ Sie können die Tools, die ein LLM verwenden kann, über die Option `tools` verw
 
 ### Modelle
 
-Sie können die Anbieter und Modelle, die Sie in Ihrer OpenCode-Konfiguration verwenden möchten, über die Optionen `provider`, `model` und `small_model` konfigurieren.
+Sie können die Anbieter und Modelle, die Sie in Ihrer Daemon Protocol-Konfiguration verwenden möchten, über die Optionen `provider`, `model` und `small_model` konfigurieren.
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "provider": {},
   "model": "anthropic/claude-sonnet-4-5",
   "small_model": "anthropic/claude-haiku-4-5"
 }
 ```
 
-Die Option `small_model` konfiguriert ein separates Modell für einfache Aufgaben wie die Titelgenerierung. Standardmäßig versucht OpenCode, ein günstigeres Modell zu verwenden, sofern eines bei Ihrem Anbieter verfügbar ist, andernfalls greift es auf Ihr Hauptmodell zurück.
+Die Option `small_model` konfiguriert ein separates Modell für einfache Aufgaben wie die Titelgenerierung. Standardmäßig versucht Daemon Protocol, ein günstigeres Modell zu verwenden, sofern eines bei Ihrem Anbieter verfügbar ist, andernfalls greift es auf Ihr Hauptmodell zurück.
 
 Zu den Anbieteroptionen können `timeout` und `setCacheKey` gehören:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "provider": {
     "anthropic": {
       "options": {
@@ -274,7 +274,7 @@ Amazon Bedrock unterstützt AWS-spezifische Konfigurationen:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "provider": {
     "amazon-bedrock": {
       "options": {
@@ -301,11 +301,11 @@ Inhabertoken (`AWS_BEARER_TOKEN_BEDROCK` oder `/connect`) haben Vorrang vor der 
 
 ### Themen
 
-Sie können das Thema, das Sie in Ihrer OpenCode-Konfiguration verwenden möchten, über die Option `theme` konfigurieren.
+Sie können das Thema, das Sie in Ihrer Daemon Protocol-Konfiguration verwenden möchten, über die Option `theme` konfigurieren.
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "theme": ""
 }
 ```
@@ -320,7 +320,7 @@ Sie können das Thema, das Sie in Ihrer OpenCode-Konfiguration verwenden möchte
 
 ```jsonc title="opencode.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "code-reviewer": {
       "description": "Reviews code for best practices and potential issues",
@@ -346,12 +346,12 @@ Sie können den Standardagenten mit der Option `default_agent` festlegen. Dadurc
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "default_agent": "plan"
 }
 ```
 
-Der Standardagent muss ein Primäragent (kein Subagent) sein. Dies kann ein integrierter Agent wie `"build"` oder `"plan"` oder ein von Ihnen definierter [custom agent](/docs/agents) sein. Wenn der angegebene Agent nicht existiert oder ein Subagent ist, greift OpenCode mit einer Warnung auf `"build"` zurück.
+Der Standardagent muss ein Primäragent (kein Subagent) sein. Dies kann ein integrierter Agent wie `"build"` oder `"plan"` oder ein von Ihnen definierter [custom agent](/docs/agents) sein. Wenn der angegebene Agent nicht existiert oder ein Subagent ist, greift Daemon Protocol mit einer Warnung auf `"build"` zurück.
 
 Diese Einstellung gilt für alle Schnittstellen: TUI, CLI (`opencode run`), Desktop-App und GitHub Aktion.
 
@@ -363,7 +363,7 @@ Sie können die Funktion [share](/docs/share) über die Option `share` konfiguri
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "share": "manual"
 }
 ```
@@ -384,7 +384,7 @@ Sie können benutzerdefinierte Befehle für sich wiederholende Aufgaben über di
 
 ```jsonc title="opencode.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "command": {
     "test": {
       "template": "Run the full test suite with coverage report and show any failures.\nFocus on the failing tests and suggest fixes.",
@@ -410,7 +410,7 @@ Sie können Ihre Tastenkombinationen über die Option `keybinds` anpassen.
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "keybinds": {}
 }
 ```
@@ -421,11 +421,11 @@ Sie können Ihre Tastenkombinationen über die Option `keybinds` anpassen.
 
 ### Automatisches Update
 
-OpenCode lädt beim Start automatisch alle neuen Updates herunter. Sie können dies mit der Option `autoupdate` deaktivieren.
+Daemon Protocol lädt beim Start automatisch alle neuen Updates herunter. Sie können dies mit der Option `autoupdate` deaktivieren.
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "autoupdate": false
 }
 ```
@@ -441,7 +441,7 @@ Sie können Codeformatierer über die Option `formatter` konfigurieren.
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -463,13 +463,13 @@ Sie können Codeformatierer über die Option `formatter` konfigurieren.
 
 ### Berechtigungen
 
-OpenCode erlaubt standardmäßig alle Vorgänge, ohne dass eine ausdrückliche Genehmigung erforderlich ist. Sie können dies mit der Option `permission` ändern.
+Daemon Protocol erlaubt standardmäßig alle Vorgänge, ohne dass eine ausdrückliche Genehmigung erforderlich ist. Sie können dies mit der Option `permission` ändern.
 
 Um beispielsweise sicherzustellen, dass die Tools `edit` und `bash` eine Benutzergenehmigung erfordern:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "ask",
     "bash": "ask"
@@ -487,7 +487,7 @@ Sie können das Verhalten der Kontextkomprimierung über die Option `compaction`
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "compaction": {
     "auto": true,
     "prune": false
@@ -506,7 +506,7 @@ Sie können Datei-Watcher-Ignoriermuster über die Option `watcher` konfiguriere
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
   }
@@ -523,7 +523,7 @@ Sie können den MCP-Server, den Sie verwenden möchten, über die Option `mcp` k
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {}
 }
 ```
@@ -534,13 +534,13 @@ Sie können den MCP-Server, den Sie verwenden möchten, über die Option `mcp` k
 
 ### Plugins
 
-[Plugins](/docs/plugins) erweitert OpenCode mit benutzerdefinierten Tools, Hooks und Integrationen.
+[Plugins](/docs/plugins) erweitert Daemon Protocol mit benutzerdefinierten Tools, Hooks und Integrationen.
 
 Platzieren Sie Ihre Plugin-Dateien in `.opencode/plugins/` oder `~/.config/opencode/plugins/`. Sie können Plugins auch über die Option `plugin` von npm laden.
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "plugin": ["opencode-helicone-session", "@my-org/custom-plugin"]
 }
 ```
@@ -555,7 +555,7 @@ Sie können die Anweisungen für das von Ihnen verwendete Modell über die Optio
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
 }
 ```
@@ -570,7 +570,7 @@ Sie können Anbieter, die automatisch geladen werden, über die Option `disabled
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "disabled_providers": ["openai", "gemini"]
 }
 ```
@@ -593,12 +593,12 @@ Sie können über die Option `enabled_providers` eine Zulassungsliste für Anbie
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "enabled_providers": ["anthropic", "openai"]
 }
 ```
 
-Dies ist nützlich, wenn Sie OpenCode darauf beschränken möchten, nur bestimmte Anbieter zu verwenden, anstatt sie einzeln zu deaktivieren.
+Dies ist nützlich, wenn Sie Daemon Protocol darauf beschränken möchten, nur bestimmte Anbieter zu verwenden, anstatt sie einzeln zu deaktivieren.
 
 :::note
 Der `disabled_providers` hat Vorrang vor `enabled_providers`.
@@ -614,7 +614,7 @@ Der Schlüssel `experimental` enthält Optionen, die sich in der aktiven Entwick
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "experimental": {}
 }
 ```
@@ -637,7 +637,7 @@ Verwenden Sie `{env:VARIABLE_NAME}`, um Umgebungsvariablen zu ersetzen:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "model": "{env:OPENCODE_MODEL}",
   "provider": {
     "anthropic": {
@@ -660,7 +660,7 @@ Verwenden Sie `{file:path/to/file}`, um den Inhalt einer Datei zu ersetzen:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["./custom-instructions.md"],
   "provider": {
     "openai": {

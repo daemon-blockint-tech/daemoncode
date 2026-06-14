@@ -68,7 +68,7 @@ Dato che questo non viene committato in Git o condiviso con il team, consigliamo
 
 ### Compatibilita Claude Code
 
-Per gli utenti che migrano da Claude Code, OpenCode supporta come fallback le convenzioni di file di Claude Code:
+Per gli utenti che migrano da Claude Code, Daemon Protocol supporta come fallback le convenzioni di file di Claude Code:
 
 - **Regole di progetto**: `CLAUDE.md` nella directory del progetto (usato se non esiste `AGENTS.md`)
 - **Regole globali**: `~/.claude/CLAUDE.md` (usato se non esiste `~/.config/opencode/AGENTS.md`)
@@ -104,7 +104,7 @@ Esempio:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
 }
 ```
@@ -113,7 +113,7 @@ Puoi anche usare URL remoti per caricare istruzioni dal web.
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["https://raw.githubusercontent.com/my-org/shared-rules/main/style.md"]
 }
 ```
@@ -134,7 +134,7 @@ L'approccio consigliato e' usare il campo `instructions` in `opencode.json`:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["docs/development-standards.md", "test/testing-guidelines.md", "packages/*/AGENTS.md"]
 }
 ```

@@ -3,7 +3,7 @@ title: الأدوات
 description: إدارة الأدوات التي يمكن لـ LLM استخدامها.
 ---
 
-تتيح الأدوات لـ LLM تنفيذ إجراءات داخل قاعدة الشفرة الخاصة بك. يأتي OpenCode مع مجموعة من الأدوات المدمجة، لكن يمكنك توسيعه عبر [أدوات مخصصة](/docs/custom-tools) أو [خوادم MCP](/docs/mcp-servers).
+تتيح الأدوات لـ LLM تنفيذ إجراءات داخل قاعدة الشفرة الخاصة بك. يأتي Daemon Protocol مع مجموعة من الأدوات المدمجة، لكن يمكنك توسيعه عبر [أدوات مخصصة](/docs/custom-tools) أو [خوادم MCP](/docs/mcp-servers).
 
 افتراضيا، تكون جميع الأدوات **مفعلة** ولا تحتاج إلى إذن للتشغيل. يمكنك التحكم في سلوك الأدوات عبر [الأذونات](/docs/permissions).
 
@@ -15,7 +15,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "deny",
     "bash": "ask",
@@ -28,7 +28,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "mymcp_*": "ask"
   }
@@ -41,7 +41,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ## المدمجة
 
-فيما يلي جميع الأدوات المدمجة المتاحة في OpenCode.
+فيما يلي جميع الأدوات المدمجة المتاحة في Daemon Protocol.
 
 ---
 
@@ -51,7 +51,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "bash": "allow"
   }
@@ -68,7 +68,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "allow"
   }
@@ -85,7 +85,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "allow"
   }
@@ -106,7 +106,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "read": "allow"
   }
@@ -123,7 +123,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "grep": "allow"
   }
@@ -140,7 +140,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "glob": "allow"
   }
@@ -161,7 +161,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "lsp": "allow"
   }
@@ -180,7 +180,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "allow"
   }
@@ -201,7 +201,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "skill": "allow"
   }
@@ -216,7 +216,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "todowrite": "allow"
   }
@@ -237,7 +237,7 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "webfetch": "allow"
   }
@@ -253,9 +253,9 @@ description: إدارة الأدوات التي يمكن لـ LLM استخدام
 ابحث في الويب عن معلومات.
 
 :::note
-هذه الأداة متاحة فقط عند استخدام مزود OpenCode أو عند ضبط متغير البيئة `OPENCODE_ENABLE_EXA` على أي قيمة منطقية صحيحة (مثل `true` أو `1`).
+هذه الأداة متاحة فقط عند استخدام مزود Daemon Protocol أو عند ضبط متغير البيئة `OPENCODE_ENABLE_EXA` على أي قيمة منطقية صحيحة (مثل `true` أو `1`).
 
-للتفعيل عند تشغيل OpenCode:
+للتفعيل عند تشغيل Daemon Protocol:
 
 ```bash
 OPENCODE_ENABLE_EXA=1 opencode
@@ -265,7 +265,7 @@ OPENCODE_ENABLE_EXA=1 opencode
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "websearch": "allow"
   }
@@ -288,7 +288,7 @@ OPENCODE_ENABLE_EXA=1 opencode
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "question": "allow"
   }

@@ -1,19 +1,19 @@
 ---
 title: 設定
-description: OpenCode JSON 設定を使用します。
+description: Daemon Protocol JSON 設定を使用します。
 ---
 
-JSON 設定ファイルを使用して OpenCode を構成できます。
+JSON 設定ファイルを使用して Daemon Protocol を構成できます。
 
 ---
 
 ## 形式
 
-OpenCode は、**JSON** と **JSONC** (コメント付きの JSON) 形式の両方をサポートしています。
+Daemon Protocol は、**JSON** と **JSONC** (コメント付きの JSON) 形式の両方をサポートしています。
 
 ```jsonc title="opencode.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "model": "anthropic/claude-sonnet-4-5",
   "autoupdate": true,
   "server": {
@@ -95,7 +95,7 @@ OpenCode は、**JSON** と **JSONC** (コメント付きの JSON) 形式の両�
 
 ### グローバル
 
-グローバル OpenCode 設定を `~/.config/opencode/opencode.json` に配置します。プロバイダー、モデル、権限などのユーザー全体の設定にはグローバル設定を使用します。
+グローバル Daemon Protocol 設定を `~/.config/opencode/opencode.json` に配置します。プロバイダー、モデル、権限などのユーザー全体の設定にはグローバル設定を使用します。
 
 TUI 固有の設定には、`~/.config/opencode/tui.json` を使用します。
 
@@ -113,7 +113,7 @@ TUI 固有の設定には、`~/.config/opencode/tui.json` を使用します。
 プロジェクト固有の設定をプロジェクトのルートに配置します。
 :::
 
-OpenCode が起動すると、現在のディレクトリで設定ファイルを検索するか、最も近い Git ディレクトリまで移動します。
+Daemon Protocol が起動すると、現在のディレクトリで設定ファイルを検索するか、最も近い Git ディレクトリまで移動します。
 
 これは Git に安全にチェックインでき、グローバルスキーマと同じスキーマを使用します。
 
@@ -150,9 +150,9 @@ opencode run "Hello world"
 
 ## スキーマ
 
-サーバー/ランタイム構成スキーマは [**`opencode.ai/config.json`**](https://opencode.ai/config.json) で定義されています。
+サーバー/ランタイム構成スキーマは [**`daemonprotocol.com/config.json`**](https://daemonprotocol.com/config.json) で定義されています。
 
-TUI 設定は [**`opencode.ai/tui.json`**](https://opencode.ai/tui.json) を使用します。
+TUI 設定は [**`daemonprotocol.com/tui.json`**](https://daemonprotocol.com/tui.json) を使用します。
 
 エディターはスキーマに基づいて検証し、オートコンプリートできる必要があります。
 
@@ -164,7 +164,7 @@ TUI 固有の設定には、専用の `tui.json` (または `tui.jsonc`) ファ�
 
 ```json title="tui.json"
 {
-  "$schema": "https://opencode.ai/tui.json",
+  "$schema": "https://daemonprotocol.com/tui.json",
   "scroll_speed": 3,
   "scroll_acceleration": {
     "enabled": true
@@ -187,7 +187,7 @@ TUI 固有の設定には、専用の `tui.json` (または `tui.jsonc`) ファ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "server": {
     "port": 4096,
     "hostname": "0.0.0.0",
@@ -202,7 +202,7 @@ TUI 固有の設定には、専用の `tui.json` (または `tui.jsonc`) ファ�
 
 - `port` - リッスンするポート。
 - `hostname` - リッスンするホスト名。 `mdns` が有効でホスト名が設定されていない場合、デフォルトは `0.0.0.0` になります。
-- `mdns` - mDNS サービス検出を有効にします。これにより、ネットワーク上の他のデバイスが OpenCode サーバーを検出できるようになります。
+- `mdns` - mDNS サービス検出を有効にします。これにより、ネットワーク上の他のデバイスが Daemon Protocol サーバーを検出できるようになります。
 - `mdnsDomain` - mDNS サービスのカスタムドメイン名。デフォルトは `opencode.local` です。同じネットワーク上で複数のインスタンスを実行する場合に便利です。
 - `cors` - ブラウザベースのクライアントから HTTP サーバーを使用するときに CORS を許可する追加のオリジン。値は完全なオリジン (スキーム + ホスト + オプションのポート) である必要があります (例: `https://app.example.com`)。
 
@@ -216,7 +216,7 @@ LLM が使用できるツールは、`tools` オプションを通じて管理�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "tools": {
     "write": false,
     "bash": false
@@ -230,24 +230,24 @@ LLM が使用できるツールは、`tools` オプションを通じて管理�
 
 ### モデル
 
-`provider`、`model`、および `small_model` オプションを使用して、OpenCode 設定で使用するプロバイダーとモデルを構成できます。
+`provider`、`model`、および `small_model` オプションを使用して、Daemon Protocol 設定で使用するプロバイダーとモデルを構成できます。
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "provider": {},
   "model": "anthropic/claude-sonnet-4-5",
   "small_model": "anthropic/claude-haiku-4-5"
 }
 ```
 
-`small_model` オプションは、タイトルの生成などの軽量タスク用に個別のモデルを構成します。デフォルトでは、OpenCode は、プロバイダーから安価なモデルが入手可能な場合は、より安価なモデルを使用しようとします。そうでない場合は、メインモデルにフォールバックします。
+`small_model` オプションは、タイトルの生成などの軽量タスク用に個別のモデルを構成します。デフォルトでは、Daemon Protocol は、プロバイダーから安価なモデルが入手可能な場合は、より安価なモデルを使用しようとします。そうでない場合は、メインモデルにフォールバックします。
 
 プロバイダーオプションには、`timeout` および `setCacheKey` を含めることができます。
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "provider": {
     "anthropic": {
       "options": {
@@ -276,7 +276,7 @@ Amazon Bedrock は、AWS 固有の設定をサポートしています。
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "provider": {
     "amazon-bedrock": {
       "options": {
@@ -307,7 +307,7 @@ UI テーマを `tui.json` で設定します。
 
 ```json title="tui.json"
 {
-  "$schema": "https://opencode.ai/tui.json",
+  "$schema": "https://daemonprotocol.com/tui.json",
   "theme": "tokyonight"
 }
 ```
@@ -322,7 +322,7 @@ UI テーマを `tui.json` で設定します。
 
 ```jsonc title="opencode.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "code-reviewer": {
       "description": "Reviews code for best practices and potential issues",
@@ -348,12 +348,12 @@ UI テーマを `tui.json` で設定します。
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "default_agent": "plan"
 }
 ```
 
-デフォルトのエージェントはプライマリエージェントである必要があります (サブエージェントではありません)。これは、`"build"` や `"plan"` のような組み込みエージェント、または定義した[カスタムエージェント](/docs/agents) にすることができます。指定されたエージェントが存在しないか、サブエージェントである場合、OpenCode は警告とともに `"build"` にフォールバックします。
+デフォルトのエージェントはプライマリエージェントである必要があります (サブエージェントではありません)。これは、`"build"` や `"plan"` のような組み込みエージェント、または定義した[カスタムエージェント](/docs/agents) にすることができます。指定されたエージェントが存在しないか、サブエージェントである場合、Daemon Protocol は警告とともに `"build"` にフォールバックします。
 
 この設定は、TUI、CLI (`opencode run`)、デスクトップアプリ、および GitHub Action のすべてのインターフェイスに適用されます。
 
@@ -365,7 +365,7 @@ UI テーマを `tui.json` で設定します。
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "share": "manual"
 }
 ```
@@ -386,7 +386,7 @@ UI テーマを `tui.json` で設定します。
 
 ```jsonc title="opencode.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "command": {
     "test": {
       "template": "Run the full test suite with coverage report and show any failures.\nFocus on the failing tests and suggest fixes.",
@@ -412,7 +412,7 @@ UI テーマを `tui.json` で設定します。
 
 ```json title="tui.json"
 {
-  "$schema": "https://opencode.ai/tui.json",
+  "$schema": "https://daemonprotocol.com/tui.json",
   "keybinds": {}
 }
 ```
@@ -423,11 +423,11 @@ UI テーマを `tui.json` で設定します。
 
 ### 自動更新
 
-OpenCode は起動時に新しいアップデートを自動的にダウンロードします。 `autoupdate` オプションを使用してこれを無効にできます。
+Daemon Protocol は起動時に新しいアップデートを自動的にダウンロードします。 `autoupdate` オプションを使用してこれを無効にできます。
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "autoupdate": false
 }
 ```
@@ -443,7 +443,7 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -471,7 +471,7 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "ask",
     "bash": "ask"
@@ -489,7 +489,7 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "compaction": {
     "auto": true,
     "prune": false
@@ -508,7 +508,7 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
   }
@@ -525,7 +525,7 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {}
 }
 ```
@@ -536,13 +536,13 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ### プラグイン
 
-[Plugins](/docs/plugins) は、カスタムツール、フック、統合を使用して OpenCode を拡張します。
+[Plugins](/docs/plugins) は、カスタムツール、フック、統合を使用して Daemon Protocol を拡張します。
 
 プラグインファイルを `.opencode/plugins/` または `~/.config/opencode/plugins/` に配置します。 `plugin` オプションを使用して npm からプラグインをロードすることもできます。
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "plugin": ["opencode-helicone-session", "@my-org/custom-plugin"]
 }
 ```
@@ -557,7 +557,7 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
 }
 ```
@@ -572,7 +572,7 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "disabled_providers": ["openai", "gemini"]
 }
 ```
@@ -594,12 +594,12 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "enabled_providers": ["anthropic", "openai"]
 }
 ```
 
-これは、OpenCode を 1 つずつ無効にするのではなく、特定のプロバイダーのみを使用するように制限したい場合に便利です。
+これは、Daemon Protocol を 1 つずつ無効にするのではなく、特定のプロバイダーのみを使用するように制限したい場合に便利です。
 
 :::note
 `disabled_providers` は `enabled_providers` よりも優先されます。
@@ -614,7 +614,7 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "experimental": {}
 }
 ```
@@ -637,7 +637,7 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "model": "{env:OPENCODE_MODEL}",
   "provider": {
     "anthropic": {
@@ -660,7 +660,7 @@ OpenCode は起動時に新しいアップデートを自動的にダウンロ�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["./custom-instructions.md"],
   "provider": {
     "openai": {

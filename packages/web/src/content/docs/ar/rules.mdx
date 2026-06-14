@@ -68,7 +68,7 @@ This is an SST v3 monorepo with TypeScript. The project uses bun workspaces for 
 
 ### التوافق مع Claude Code
 
-للمستخدمين الذين ينتقلون من Claude Code، يدعم OpenCode اصطلاحات ملفات Claude Code كبدائل احتياطية:
+للمستخدمين الذين ينتقلون من Claude Code، يدعم Daemon Protocol اصطلاحات ملفات Claude Code كبدائل احتياطية:
 
 - **قواعد المشروع**: `CLAUDE.md` في دليل مشروعك (يُستخدم إذا لم يوجد `AGENTS.md`)
 - **قواعد عامة**: `~/.claude/CLAUDE.md` (يُستخدم إذا لم يوجد `~/.config/opencode/AGENTS.md`)
@@ -104,7 +104,7 @@ export OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
 }
 ```
@@ -113,7 +113,7 @@ export OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["https://raw.githubusercontent.com/my-org/shared-rules/main/style.md"]
 }
 ```
@@ -134,7 +134,7 @@ export OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1 # Disable only .claude/skills
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["docs/development-standards.md", "test/testing-guidelines.md", "packages/*/AGENTS.md"]
 }
 ```

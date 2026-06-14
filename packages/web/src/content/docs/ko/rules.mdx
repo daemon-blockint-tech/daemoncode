@@ -1,6 +1,6 @@
 ---
 title: 규칙
-description: OpenCode에 대한 사용자 정의 지침 설정.
+description: Daemon Protocol에 대한 사용자 정의 지침 설정.
 ---
 
 `AGENTS.md` 파일을 만들 수 있도록 opencode에 사용자 정의 지침을 제공 할 수 있습니다. Cursor의 규칙과 유사합니다. LLM의 컨텍스트에 포함된 지침을 통해 특정 프로젝트에 대한 행동을 사용자 정의합니다.
@@ -103,7 +103,7 @@ opencode가 시작될 때, 이 순서에 있는 규칙 파일을 찾습니다:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
 }
 ```
@@ -112,7 +112,7 @@ opencode가 시작될 때, 이 순서에 있는 규칙 파일을 찾습니다:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["https://raw.githubusercontent.com/my-org/shared-rules/main/style.md"]
 }
 ```
@@ -133,7 +133,7 @@ opencode가 `AGENTS.md`에 있는 자동적으로 파스 파일 참조를 하지
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["docs/development-standards.md", "test/testing-guidelines.md", "packages/*/AGENTS.md"]
 }
 ```

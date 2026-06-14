@@ -3,7 +3,7 @@ title: ツール
 description: LLM が使用できるツールを管理します。
 ---
 
-ツールを使用すると、LLM がコードベースでアクションを実行できるようになります。 OpenCode には一連の組み込みツールが付属していますが、[カスタムツール](/docs/custom-tools) または [MCP サーバー](/docs/mcp-servers) を使用して拡張できます。
+ツールを使用すると、LLM がコードベースでアクションを実行できるようになります。 Daemon Protocol には一連の組み込みツールが付属していますが、[カスタムツール](/docs/custom-tools) または [MCP サーバー](/docs/mcp-servers) を使用して拡張できます。
 
 デフォルトでは、すべてのツールは**有効**になっており、実行するための権限は必要ありません。 [権限](/docs/permissions).
 
@@ -15,7 +15,7 @@ description: LLM が使用できるツールを管理します。
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "deny",
     "bash": "ask",
@@ -28,7 +28,7 @@ description: LLM が使用できるツールを管理します。
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "mymcp_*": "ask"
   }
@@ -41,7 +41,7 @@ description: LLM が使用できるツールを管理します。
 
 ## 組み込み
 
-OpenCode で利用可能なすべての組み込みツールを次に示します。
+Daemon Protocol で利用可能なすべての組み込みツールを次に示します。
 
 ---
 
@@ -51,7 +51,7 @@ OpenCode で利用可能なすべての組み込みツールを次に示しま�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "bash": "allow"
   }
@@ -68,7 +68,7 @@ OpenCode で利用可能なすべての組み込みツールを次に示しま�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "allow"
   }
@@ -85,7 +85,7 @@ OpenCode で利用可能なすべての組み込みツールを次に示しま�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "allow"
   }
@@ -106,7 +106,7 @@ OpenCode で利用可能なすべての組み込みツールを次に示しま�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "read": "allow"
   }
@@ -123,7 +123,7 @@ OpenCode で利用可能なすべての組み込みツールを次に示しま�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "grep": "allow"
   }
@@ -140,7 +140,7 @@ OpenCode で利用可能なすべての組み込みツールを次に示しま�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "glob": "allow"
   }
@@ -161,7 +161,7 @@ OpenCode で利用可能なすべての組み込みツールを次に示しま�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "lsp": "allow"
   }
@@ -180,7 +180,7 @@ OpenCode で利用可能なすべての組み込みツールを次に示しま�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "allow"
   }
@@ -201,7 +201,7 @@ OpenCode で利用可能なすべての組み込みツールを次に示しま�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "skill": "allow"
   }
@@ -216,7 +216,7 @@ OpenCode で利用可能なすべての組み込みツールを次に示しま�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "todowrite": "allow"
   }
@@ -237,7 +237,7 @@ Web コンテンツを取得します。
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "webfetch": "allow"
   }
@@ -253,9 +253,9 @@ LLM が Web ページをフェッチして読み取ることを許可します�
 ウェブで情報を検索してください。
 
 :::note
-このツールは、OpenCode プロバイダーを使用している場合、または `OPENCODE_ENABLE_EXA` 環境変数が真実の値 (`true` または `1` など) に設定されている場合にのみ使用できます。
+このツールは、Daemon Protocol プロバイダーを使用している場合、または `OPENCODE_ENABLE_EXA` 環境変数が真実の値 (`true` または `1` など) に設定されている場合にのみ使用できます。
 
-OpenCode の起動時に有効にするには:
+Daemon Protocol の起動時に有効にするには:
 
 ```bash
 OPENCODE_ENABLE_EXA=1 opencode
@@ -265,7 +265,7 @@ OPENCODE_ENABLE_EXA=1 opencode
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "websearch": "allow"
   }
@@ -288,7 +288,7 @@ API キーは必要ありません。ツールは認証なしで Exa AI のホ�
 
 ```json title="opencode.json" {4}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "question": "allow"
   }

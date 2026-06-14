@@ -1,19 +1,19 @@
 ---
 title: การกำหนดค่า
-description: การใช้การกำหนดค่า OpenCode JSON
+description: การใช้การกำหนดค่า Daemon Protocol JSON
 ---
 
-คุณสามารถกำหนดค่า OpenCode ได้โดยใช้ไฟล์กำหนดค่า JSON
+คุณสามารถกำหนดค่า Daemon Protocol ได้โดยใช้ไฟล์กำหนดค่า JSON
 
 ---
 
 ## รูปแบบ
 
-OpenCode รองรับทั้งรูปแบบ **JSON** และ **JSONC** (JSON พร้อมความคิดเห็น)
+Daemon Protocol รองรับทั้งรูปแบบ **JSON** และ **JSONC** (JSON พร้อมความคิดเห็น)
 
 ```jsonc title="opencode.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "model": "anthropic/claude-sonnet-4-5",
   "autoupdate": true,
   "server": {
@@ -96,7 +96,7 @@ OpenCode รองรับทั้งรูปแบบ **JSON** และ **J
 
 ### ทั่วโลก
 
-วางการกำหนดค่า OpenCode ส่วนกลางของคุณใน `~/.config/opencode/opencode.json` ใช้การกำหนดค่าส่วนกลางสำหรับการตั้งค่าทั้งผู้ใช้ เช่น ผู้ให้บริการ รุ่น และสิทธิ์
+วางการกำหนดค่า Daemon Protocol ส่วนกลางของคุณใน `~/.config/opencode/opencode.json` ใช้การกำหนดค่าส่วนกลางสำหรับการตั้งค่าทั้งผู้ใช้ เช่น ผู้ให้บริการ รุ่น และสิทธิ์
 
 สำหรับการตั้งค่าเฉพาะ TUI ให้ใช้ `~/.config/opencode/tui.json`
 
@@ -114,7 +114,7 @@ OpenCode รองรับทั้งรูปแบบ **JSON** และ **J
 วางการกำหนดค่าเฉพาะโปรเจ็กต์ไว้ที่รากของโปรเจ็กต์ของคุณ
 :::
 
-เมื่อ OpenCode เริ่มต้นระบบ จะค้นหาไฟล์กำหนดค่าในไดเร็กทอรีปัจจุบันหรือข้ามไปยังไดเร็กทอรี Git ที่ใกล้ที่สุด
+เมื่อ Daemon Protocol เริ่มต้นระบบ จะค้นหาไฟล์กำหนดค่าในไดเร็กทอรีปัจจุบันหรือข้ามไปยังไดเร็กทอรี Git ที่ใกล้ที่สุด
 
 นอกจากนี้ยังปลอดภัยที่จะตรวจสอบใน Git และใช้สคีมาเดียวกันกับสคีมาระดับโลก
 
@@ -151,9 +151,9 @@ opencode run "Hello world"
 
 ## สคีมา
 
-ไฟล์กำหนดค่ามีสคีมาที่กำหนดไว้ใน [**`opencode.ai/config.json`**](https://opencode.ai/config.json)
+ไฟล์กำหนดค่ามีสคีมาที่กำหนดไว้ใน [**`daemonprotocol.com/config.json`**](https://daemonprotocol.com/config.json)
 
-การกำหนดค่า TUI ใช้ [**`opencode.ai/tui.json`**](https://opencode.ai/tui.json)
+การกำหนดค่า TUI ใช้ [**`daemonprotocol.com/tui.json`**](https://daemonprotocol.com/tui.json)
 
 ผู้แก้ไขของคุณควรสามารถตรวจสอบและเติมข้อความอัตโนมัติตามสคีมาได้
 
@@ -165,7 +165,7 @@ opencode run "Hello world"
 
 ```json title="tui.json"
 {
-  "$schema": "https://opencode.ai/tui.json",
+  "$schema": "https://daemonprotocol.com/tui.json",
   "scroll_speed": 3,
   "scroll_acceleration": {
     "enabled": true
@@ -188,7 +188,7 @@ opencode run "Hello world"
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "server": {
     "port": 4096,
     "hostname": "0.0.0.0",
@@ -203,7 +203,7 @@ opencode run "Hello world"
 
 - `port` - ​​พอร์ตสำหรับฟัง
 - `hostname` - ​​ชื่อโฮสต์ที่จะฟัง เมื่อเปิดใช้งาน `mdns` และไม่ได้ตั้งชื่อโฮสต์ ค่าเริ่มต้นจะเป็น `0.0.0.0`
-- `mdns` - ​​เปิดใช้งานการค้นหาบริการ mDNS ซึ่งช่วยให้อุปกรณ์อื่นๆ บนเครือข่ายค้นพบเซิร์ฟเวอร์ OpenCode ของคุณได้
+- `mdns` - ​​เปิดใช้งานการค้นหาบริการ mDNS ซึ่งช่วยให้อุปกรณ์อื่นๆ บนเครือข่ายค้นพบเซิร์ฟเวอร์ Daemon Protocol ของคุณได้
 - `mdnsDomain` - ​​ชื่อโดเมนที่กำหนดเองสำหรับบริการ mDNS ค่าเริ่มต้นเป็น `opencode.local` มีประโยชน์สำหรับการเรียกใช้หลายอินสแตนซ์บนเครือข่ายเดียวกัน
 - `cors` - ​​ต้นกำเนิดเพิ่มเติมเพื่ออนุญาต CORS เมื่อใช้เซิร์ฟเวอร์ HTTP จากไคลเอนต์ที่ใช้เบราว์เซอร์ ค่าจะต้องเป็นต้นกำเนิดแบบเต็ม (สคีมา + โฮสต์ + พอร์ตเสริม) เช่น `https://app.example.com`
 
@@ -217,7 +217,7 @@ opencode run "Hello world"
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "tools": {
     "write": false,
     "bash": false
@@ -231,24 +231,24 @@ opencode run "Hello world"
 
 ### Models
 
-คุณสามารถกำหนดค่าผู้ให้บริการและรุ่นที่คุณต้องการใช้ในการกำหนดค่า OpenCode ของคุณได้ผ่านตัวเลือก `provider`, `model` และ `small_model`
+คุณสามารถกำหนดค่าผู้ให้บริการและรุ่นที่คุณต้องการใช้ในการกำหนดค่า Daemon Protocol ของคุณได้ผ่านตัวเลือก `provider`, `model` และ `small_model`
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "provider": {},
   "model": "anthropic/claude-sonnet-4-5",
   "small_model": "anthropic/claude-haiku-4-5"
 }
 ```
 
-ตัวเลือก `small_model` จะกำหนดค่าโมเดลแยกต่างหากสำหรับงานที่ไม่ซับซ้อน เช่น การสร้างชื่อเรื่อง ตามค่าเริ่มต้น OpenCode จะพยายามใช้โมเดลที่ถูกกว่าหากมีให้บริการจากผู้ให้บริการของคุณ ไม่เช่นนั้นโมเดลจะกลับไปเป็นโมเดลหลักของคุณ
+ตัวเลือก `small_model` จะกำหนดค่าโมเดลแยกต่างหากสำหรับงานที่ไม่ซับซ้อน เช่น การสร้างชื่อเรื่อง ตามค่าเริ่มต้น Daemon Protocol จะพยายามใช้โมเดลที่ถูกกว่าหากมีให้บริการจากผู้ให้บริการของคุณ ไม่เช่นนั้นโมเดลจะกลับไปเป็นโมเดลหลักของคุณ
 
 ตัวเลือกผู้ให้บริการอาจรวมถึง `timeout` และ `setCacheKey`:
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "provider": {
     "anthropic": {
       "options": {
@@ -277,7 +277,7 @@ Amazon Bedrock รองรับ AWS-การกำหนดค่าเฉพ
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "provider": {
     "amazon-bedrock": {
       "options": {
@@ -308,7 +308,7 @@ Bearer Token (`AWS_BEARER_TOKEN_BEDROCK` หรือ `/connect`) มีคว�
 
 ```json title="tui.json"
 {
-  "$schema": "https://opencode.ai/tui.json",
+  "$schema": "https://daemonprotocol.com/tui.json",
   "theme": "tokyonight"
 }
 ```
@@ -323,7 +323,7 @@ Bearer Token (`AWS_BEARER_TOKEN_BEDROCK` หรือ `/connect`) มีคว�
 
 ```jsonc title="opencode.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "agent": {
     "code-reviewer": {
       "description": "Reviews code for best practices and potential issues",
@@ -349,12 +349,12 @@ Bearer Token (`AWS_BEARER_TOKEN_BEDROCK` หรือ `/connect`) มีคว�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "default_agent": "plan"
 }
 ```
 
-ตัวแทนเริ่มต้นจะต้องเป็นตัวแทนหลัก (ไม่ใช่ตัวแทนย่อย) ซึ่งอาจเป็นตัวแทนในตัว เช่น `"build"` หรือ `"plan"` หรือ [ตัวแทนที่กำหนดเอง](/docs/agents) ที่คุณกำหนดไว้ หากไม่มีตัวแทนที่ระบุหรือเป็นตัวแทนย่อย OpenCode จะถอยกลับไปที่ `"build"` พร้อมคำเตือน
+ตัวแทนเริ่มต้นจะต้องเป็นตัวแทนหลัก (ไม่ใช่ตัวแทนย่อย) ซึ่งอาจเป็นตัวแทนในตัว เช่น `"build"` หรือ `"plan"` หรือ [ตัวแทนที่กำหนดเอง](/docs/agents) ที่คุณกำหนดไว้ หากไม่มีตัวแทนที่ระบุหรือเป็นตัวแทนย่อย Daemon Protocol จะถอยกลับไปที่ `"build"` พร้อมคำเตือน
 
 การตั้งค่านี้ใช้กับอินเทอร์เฟซทั้งหมด: TUI, CLI (`opencode run`) แอปเดสก์ท็อป และ GitHub Action
 
@@ -366,7 +366,7 @@ Bearer Token (`AWS_BEARER_TOKEN_BEDROCK` หรือ `/connect`) มีคว�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "share": "manual"
 }
 ```
@@ -387,7 +387,7 @@ Bearer Token (`AWS_BEARER_TOKEN_BEDROCK` หรือ `/connect`) มีคว�
 
 ```jsonc title="opencode.jsonc"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "command": {
     "test": {
       "template": "Run the full test suite with coverage report and show any failures.\nFocus on the failing tests and suggest fixes.",
@@ -413,7 +413,7 @@ Bearer Token (`AWS_BEARER_TOKEN_BEDROCK` หรือ `/connect`) มีคว�
 
 ```json title="tui.json"
 {
-  "$schema": "https://opencode.ai/tui.json",
+  "$schema": "https://daemonprotocol.com/tui.json",
   "keybinds": {}
 }
 ```
@@ -424,11 +424,11 @@ Bearer Token (`AWS_BEARER_TOKEN_BEDROCK` หรือ `/connect`) มีคว�
 
 ### อัปเดตอัตโนมัติ
 
-OpenCode จะดาวน์โหลดการอัปเดตใหม่โดยอัตโนมัติเมื่อเริ่มต้นระบบ คุณสามารถปิดการใช้งานนี้ได้โดยใช้ตัวเลือก `autoupdate`
+Daemon Protocol จะดาวน์โหลดการอัปเดตใหม่โดยอัตโนมัติเมื่อเริ่มต้นระบบ คุณสามารถปิดการใช้งานนี้ได้โดยใช้ตัวเลือก `autoupdate`
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "autoupdate": false
 }
 ```
@@ -444,7 +444,7 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "formatter": {
     "prettier": {
       "disabled": true
@@ -472,7 +472,7 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "permission": {
     "edit": "ask",
     "bash": "ask"
@@ -490,7 +490,7 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "compaction": {
     "auto": true,
     "prune": false,
@@ -511,7 +511,7 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
   }
@@ -528,7 +528,7 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "mcp": {}
 }
 ```
@@ -539,13 +539,13 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ### ปลั๊กอิน
 
-[ปลั๊กอิน](/docs/plugins) ขยาย OpenCode ด้วยเครื่องมือที่กำหนดเอง hooks และการผสานรวม
+[ปลั๊กอิน](/docs/plugins) ขยาย Daemon Protocol ด้วยเครื่องมือที่กำหนดเอง hooks และการผสานรวม
 
 วางไฟล์ปลั๊กอินใน `.opencode/plugins/` หรือ `~/.config/opencode/plugins/` คุณยังสามารถโหลดปลั๊กอินจาก npm ผ่านตัวเลือก `plugin`
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "plugin": ["opencode-helicone-session", "@my-org/custom-plugin"]
 }
 ```
@@ -560,7 +560,7 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["CONTRIBUTING.md", "docs/guidelines.md", ".cursor/rules/*.md"]
 }
 ```
@@ -576,7 +576,7 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "disabled_providers": ["openai", "gemini"]
 }
 ```
@@ -599,12 +599,12 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "enabled_providers": ["anthropic", "openai"]
 }
 ```
 
-สิ่งนี้มีประโยชน์เมื่อคุณต้องการจำกัด OpenCode ให้ใช้เฉพาะผู้ให้บริการบางราย แทนที่จะปิดการใช้งานทีละราย
+สิ่งนี้มีประโยชน์เมื่อคุณต้องการจำกัด Daemon Protocol ให้ใช้เฉพาะผู้ให้บริการบางราย แทนที่จะปิดการใช้งานทีละราย
 
 :::note
 `disabled_providers` มีลำดับความสำคัญมากกว่า `enabled_providers`
@@ -620,7 +620,7 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "experimental": {}
 }
 ```
@@ -643,7 +643,7 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "model": "{env:OPENCODE_MODEL}",
   "provider": {
     "anthropic": {
@@ -666,7 +666,7 @@ OpenCode จะดาวน์โหลดการอัปเดตใหม�
 
 ```json title="opencode.json"
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "instructions": ["./custom-instructions.md"],
   "provider": {
     "openai": {

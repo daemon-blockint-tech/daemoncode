@@ -42,17 +42,17 @@ Focus on the failing tests and suggest fixes.
 
 ## الإعداد
 
-يمكنك إضافة أوامر مخصصة عبر إعدادات OpenCode أو بإنشاء ملفات Markdown داخل الدليل `commands/`.
+يمكنك إضافة أوامر مخصصة عبر إعدادات Daemon Protocol أو بإنشاء ملفات Markdown داخل الدليل `commands/`.
 
 ---
 
 ### JSON
 
-استخدم خيار `command` في [config](/docs/config) الخاص بـ OpenCode:
+استخدم خيار `command` في [config](/docs/config) الخاص بـ Daemon Protocol:
 
 ```json title="opencode.jsonc" {4-12}
 {
-  "$schema": "https://opencode.ai/config.json",
+  "$schema": "https://daemonprotocol.com/config.json",
   "command": {
     // يصبح هذا اسم الأمر
     "test": {
