@@ -156,3 +156,15 @@ const table = sqliteTable("session", {
 - Keep delivery vocabulary explicit. Prompts steer by default and coalesce into the active activity at the next safe provider-turn boundary. Explicit `queue` inputs open FIFO future activities one at a time after the active activity settles.
 - Keep EventV2 replay owner claims separate from clustered Session execution ownership.
 - Keep the System Context algebra, registry, and built-ins in `src/system-context`; keep Context Source producers with their observed domains, and keep Session History selection plus Context Epoch persistence Session-owned.
+
+## Cursor Cloud specific instructions
+
+Toolchain and standard commands are already documented: see `CONTRIBUTING.md` (dev setup, `bun dev`, server/web/desktop), the `## Type Checking` / `## Testing` sections above, and `package.json` scripts. The notes below are cloud-specific gotchas only.
+
+- `bun` (pinned to `bun@1.3.14`) is the runtime/package manager and is preinstalled in the VM at `~/.bun/bin` (on `PATH` via `~/.bashrc`). The startup update script runs `bun install` from the repo root, which also runs `postinstall` (`fix-node-pty`) and installs Husky hooks.
+- Running services for end-to-end work (all from repo root):
+  - Headless API server: `bun dev serve --port 4096` (default port 4096; logs `server listening on http://127.0.0.1:4096`). `OPENCODE_SERVER_PASSWORD` is unset by default so the server is unsecured locally — fine for dev.
+  - TUI: `bun dev .` is interactive and must NOT be run as a blocking foreground command — run it in `tmux` and inspect with `tmux capture-pane` (see `packages/opencode/AGENTS.md`).
+  - Web app: `bun run --cwd packages/app dev` serves on `http://localhost:3000` (Vite) and talks to the headless server on 4096, so start the server first.
+- Live AI generation requires a provider: no provider is configured by default (the TUI shows "Run /connect to add an AI provider"). Running the server/TUI/web and exercising the HTTP API (e.g. `POST /session`) works without any key; actually prompting a model needs a provider API key (e.g. `ANTHROPIC_API_KEY`/`OPENAI_API_KEY`) or `opencode auth login`.
+- Known pre-existing failure on `dev` (not an env issue): `bun typecheck` fails in `@opencode-ai/tui` at `src/component/ace-status.tsx` (`Config.ace` / `session.next.ace.*` event types). All other workspaces typecheck clean. `bun lint` (oxlint) passes with warnings only.
