@@ -167,7 +167,10 @@ export async function runGateWithGuardedTools(
     // f_enforce == 0 : safe path
     if (SOP_TOOLS.has(tool)) {
       registers.sigma_sop = 1
-      registers.r_gate = 0 // tactical reward for returning to SOP
+      registers.r_gate = 0 // tactical reward: refresh the per-gate retry budget
+      // ...but every turn still consumes the global budget, so a planner cannot
+      // loop forever on SOP tools (guarantees Bounded Termination).
+      registers.r_global++
       recorder.record({
         gate,
         turn: registers.turn,
@@ -175,6 +178,9 @@ export async function runGateWithGuardedTools(
         enforcer_status: "SUCCESS",
         network_emitted: true,
       })
+      if (registers.r_global >= loopConfig.maxGlobalRetries) {
+        return { status: "ROLLBACK", traces: recorder.getTraces() }
+      }
       conversationHistory.push({
         role: "tool",
         content: JSON.stringify({ status: "SUCCESS", output: "SCAN_CLEAN_NO_HIGH_RISK" }),

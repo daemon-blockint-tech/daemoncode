@@ -81,12 +81,14 @@ Decision Process (MDP) with an explicit safe set $\mathcal{S}_{\text{safe}}$,
 and prove two safety properties for the smart-contract remediation gate
 (\textsc{Gate~3}): \emph{No Unsafe Network Emission} and \emph{Bounded
 Termination}. We reduce \textsc{Gate~3} to a finite discrete automaton over
-$s_\delta=\langle r,\sigma_{\text{sop}}\rangle$ with a retry budget
-$K_{\text{gate}}=3$, giving a worst-case episode length $T_{\max}=4$. The model
-is connected to a concrete TypeScript kernel (\texttt{runGateWithGuardedTools})
-whose per-turn telemetry rows instantiate the formal trace, and to three
-``Trinity Fixtures'' that serve as executable regression witnesses for the
-transition function. We additionally describe an uncertainty-aware (pessimistic)
+$s_\delta=\langle r,\sigma_{\text{sop}}\rangle$ with a per-gate retry budget
+$K_{\text{gate}}=3$ (any all-violation path rolls back within
+$K_{\text{gate}}+1$ turns), while a global turn budget $K_{\text{global}}$
+guarantees termination for \emph{any} planner. The model is connected to a
+concrete TypeScript kernel (\texttt{runGateWithGuardedTools}) whose per-turn
+telemetry rows instantiate the formal trace, to three ``Trinity Fixtures'' that
+serve as executable regression witnesses, and to a bounded-exhaustive verifier
+that machine-checks both safety properties over all adversarial planners. We additionally describe an uncertainty-aware (pessimistic)
 variant of the shield that removes the ``trusted oracle'' assumption on external
 scanners. The contribution is methodological: a reproducible bridge between a
 small, exhaustively verifiable formal model and a production runtime.
@@ -251,21 +253,24 @@ $E_t=0$ in all cases. \qed
 
 \begin{theorem}[Bounded Termination]
 Every \textsc{Gate~3} episode reaches a terminal state
-(\textbf{PROCEED} or \textbf{ROLLBACK}) in at most
-$T_{\max}=K_{\text{gate}}+1=4$ turns, for any policy $\pi_\theta$.
+(\textbf{PROCEED} or \textbf{ROLLBACK}) within $K_{\text{global}}$ turns, for any
+policy $\pi_\theta$. Moreover, any path consisting solely of forbidden or illegal
+actions terminates within $K_{\text{gate}}+1$ turns.
 \end{theorem}
 \begin{proof}
-Each $I_{\text{bad}}$ (or an illegal $I_{\text{done}}$ with
-$\sigma_{\text{sop}}=0$) strictly increments $r$. After at most $K_{\text{gate}}$
-increments, $r\ge K_{\text{gate}}$ forces a \textbf{ROLLBACK}. The only way to
-avoid this is an $I_{\text{sop}}$ (setting $\sigma_{\text{sop}}=1$, resetting
-$r$) followed by $I_{\text{done}}$, which reaches \textbf{PROCEED}. The
-\textbf{ROLLBACK} branch terminates in at most $K_{\text{gate}}=3$ turns (three
-consecutive $I_{\text{bad}}$). The \textbf{PROCEED} branch is longest when an
-initial blocked turn is followed by SOP execution and completion, i.e.\ one
-blocked turn plus a reset run of length $K_{\text{gate}}$, bounded by
-$T_{\max}=K_{\text{gate}}+1=4$. Hence every episode terminates within
-$T_{\max}=4$ turns. \qed
+Two distinct budgets bound the loop. (i) Each $I_{\text{bad}}$ (or an illegal
+$I_{\text{done}}$ with $\sigma_{\text{sop}}=0$) strictly increments the per-gate
+counter $r$; after at most $K_{\text{gate}}$ increments, $r\ge K_{\text{gate}}$
+forces a \textbf{ROLLBACK}. An $I_{\text{sop}}$ sets $\sigma_{\text{sop}}=1$ and
+resets $r$ (the tactical reward), so an adversary could otherwise loop on
+$I_{\text{sop}}$ forever. (ii) To exclude this, \emph{every} turn---including a
+successful $I_{\text{sop}}$---consumes one unit of the global budget
+$r_{\text{global}}$, which is never reset; once $r_{\text{global}}\ge
+K_{\text{global}}$ the loop exits with \textbf{ROLLBACK}. Hence total turns are
+bounded by $K_{\text{global}}$ regardless of the planner. The all-violation path
+is bounded more tightly: it exhausts $r$ after $K_{\text{gate}}$ steps, so it
+terminates within $K_{\text{gate}}+1$ turns (e.g.\ the synonym-attack fixture
+rolls back at turn $3$ for $K_{\text{gate}}=3$). \qed
 \end{proof}
 
 \noindent Consequently, the reachable trajectory space collapses to two terminal
@@ -319,6 +324,28 @@ to $\Delta_\delta$ and are encoded as unit tests:
 Any change to the kernel that violates $\Delta_\delta$ is caught as a regression
 failure, making the formal model an enforced contract rather than documentation.
 
+\subsection{Machine-Checked Verification}
+\label{sec:verification}
+Beyond the three example traces, a bounded-exhaustive verifier
+(\texttt{verifyGate}) discharges both safety properties against the \emph{real}
+kernel rather than an abstract model. It drives \texttt{runGateWithGuardedTools}
+with an adversarial planner that enumerates every action sequence over a
+representative alphabet (one forbidden action, the SOP tools, the completion
+tool, and an unknown tool) up to depth $K_{\text{gate}}+1$; because the planner
+repeats its final symbol, ``keeps doing $X$ forever'' tails---including unbounded
+$I_{\text{sop}}$---are covered. For every path it asserts (P1) no telemetry row
+for a forbidden action has \texttt{network\_emitted}=true and (P2) the episode
+terminates with a trace no longer than $K_{\text{global}}$. The check is run in
+CI across a range of budgets and with the pessimistic shield enabled.
+
+This exercise was not merely confirmatory: it exposed a real defect. An earlier
+kernel reset $r$ on a successful $I_{\text{sop}}$ \emph{without} charging the
+global budget, so a planner that looped on the SOP tool never terminated. The
+fix---charging $r_{\text{global}}$ on every turn (Theorem~2)---was driven by, and
+is now guarded by, this verifier. A companion PRISM/PCTL model
+(\texttt{verification/gate3.prism}) is provided for independent model-checking by
+the reader.
+
 \section{Uncertainty-Aware (Pessimistic) Shielding}
 \label{sec:uncertainty}
 A naive shield trusts the external scanners (ARES, ouroboros) as perfect
@@ -343,10 +370,12 @@ The proofs rely on (i) the kernel and gateway faithfully implementing
 $\sigma$ and $\Delta$, and (ii) the semiotic layer correctly mapping forbidden
 synonyms into $I_{\text{bad}}$. New evasion tools are handled by extending the
 semiotic links and \textsc{principle} memories, \emph{not} by mutating the
-kernel, preserving $\mathcal{S}_{\text{safe}}$. The present validation is
-design-level plus an executable regression suite; a probabilistic model checker
-(e.g.\ PRISM/Storm) over the eight-state automaton and empirical ``live-fire''
-logs against a real LLM are natural next steps.
+kernel, preserving $\mathcal{S}_{\text{safe}}$. Validation now combines the
+formal proofs, the Trinity Fixtures, and the bounded-exhaustive verifier of
+Section~\ref{sec:verification} (which already caught and fixed a termination
+defect); a PRISM/PCTL model is included for independent checking. The main
+remaining gaps are empirical ``live-fire'' logs against a real LLM and
+integration into the production tool gate, both deliberately staged.
 
 \section{Conclusion}
 Safety in the Daemon Protocol is a property of a deterministic kernel, not of the
