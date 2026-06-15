@@ -26,11 +26,19 @@ A network packet (`network_emitted = true`, the model's `E_t = 1`) is emitted
 only for actions that pass the shield. Forbidden actions are reflected back as
 cognitive interrupts (`E_t = 0`).
 
-## Safety properties (proven for GATE_3)
+## Safety properties (proven & machine-checked for GATE_3)
 
 - **No Unsafe Network Emission** — a forbidden intent never sets `network_emitted`.
-- **Bounded Termination** — every episode reaches `PROCEED` or `ROLLBACK` in at
-  most `maxGateRetries + 1` turns, for any planner.
+- **Bounded Termination** — every episode reaches `PROCEED` or `ROLLBACK` within
+  `maxGlobalRetries` turns for any planner; an all-violation path rolls back
+  within `maxGateRetries + 1` turns. (Every turn consumes the global budget, so a
+  planner cannot loop forever on SOP tools.)
+
+Both properties are enforced two ways: the **Trinity Fixtures**
+(`src/kernel.test.ts`) and a **bounded-exhaustive verifier** (`src/verification.ts`,
+`verifyGate`) that drives the real kernel with an adversarial planner over every
+action sequence and asserts P1/P2 on each path. A companion PRISM/PCTL model
+lives in [`verification/`](./verification/) for independent model-checking.
 
 ## Model ↔ code mapping
 
@@ -62,7 +70,7 @@ console.log(result.status, result.traces)
 
 ```bash
 cd packages/kernel
-bun test        # Trinity Fixtures (6 tests)
+bun test        # Trinity Fixtures + exhaustive verification (12 tests)
 bun run typecheck
 ```
 
@@ -72,4 +80,5 @@ See [`docs/trinity-fixtures.md`](./docs/trinity-fixtures.md) for the golden trac
 
 Live-gate integration; real MCP executors for ARES/ouroboros/Orion; GATE_0/1/2/4;
 five-layer Crystalline memory + semiotic links; SQLite/SIEM telemetry sinks;
-PRISM model-checking of the 8-state automaton.
+running the PRISM model in CI (the model is provided; an in-repo exhaustive
+verifier already enforces the properties).

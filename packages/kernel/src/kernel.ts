@@ -122,7 +122,14 @@ export async function runGateWithGuardedTools(options: RunGateOptions): Promise<
         network_emitted: result.networkEmitted,
       })
       if (result.status === "SUCCESS") {
-        registers.r_gate = 0 // tactical reward for returning to SOP
+        registers.r_gate = 0 // tactical reward: refresh the per-gate retry budget
+        // ...but the global budget still ticks: every turn consumes it, so a
+        // planner cannot loop forever by repeatedly invoking SOP tools. This is
+        // the hard wall that guarantees Bounded Termination for any planner.
+        registers.r_global++
+        if (registers.r_global >= config.maxGlobalRetries) {
+          return { status: "ROLLBACK", traces: recorder.getTraces() }
+        }
         conversationHistory.push({
           role: "tool",
           content: JSON.stringify({ status: "SUCCESS", tool }),
