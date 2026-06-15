@@ -1,46 +1,52 @@
+import { Effect } from "effect"
 import { appendFile, mkdir } from "node:fs/promises"
-import { join } from "node:path"
-import { homedir } from "node:os"
+import { dirname } from "node:path"
 
-export interface ShodanAuditEntry {
-  timestamp: string
+const LOG_PATH = process.env.SHODAN_AUDIT_LOG ?? "/tmp/shodan-audit.jsonl"
+
+export function buildAuditEntry(entry: {
   operation: string
   query?: string
   ip?: string
-  params?: Record<string, unknown>
-  sessionId?: string
-  userId?: string
   approved: boolean
-}
-
-const AUDIT_DIR = join(homedir(), ".daemoncode", "audit")
-const AUDIT_FILE = join(AUDIT_DIR, "shodan.ndjson")
-
-export async function auditLog(entry: ShodanAuditEntry): Promise<void> {
-  try {
-    await mkdir(AUDIT_DIR, { recursive: true })
-    const line = JSON.stringify({ ...entry, timestamp: new Date().toISOString() }) + "\n"
-    await appendFile(AUDIT_FILE, line, "utf8")
-  } catch {
-    // Audit failure must never crash the tool — log to stderr only
-    console.error("[shodan:audit] Failed to write audit log:", entry)
-  }
-}
-
-export function buildAuditEntry(
-  operation: string,
-  params: Record<string, unknown>,
-  approved: boolean,
-  context?: { sessionId?: string; userId?: string },
-): ShodanAuditEntry {
+  result_count?: number
+  error?: string
+}) {
   return {
-    timestamp: new Date().toISOString(),
-    operation,
-    params,
-    approved,
-    sessionId: context?.sessionId,
-    userId: context?.userId,
-    ...(params.query ? { query: String(params.query) } : {}),
-    ...(params.ip ? { ip: String(params.ip) } : {}),
+    operation: entry.operation,
+    query: entry.query,
+    ip: entry.ip,
+    approved: entry.approved,
+    result_count: entry.result_count,
+    error: entry.error,
   }
+}
+
+export function auditLog(entry: {
+  operation: string
+  query?: string
+  ip?: string
+  approved: boolean
+  result_count?: number
+  error?: string
+}) {
+  return Effect.gen(function* () {
+    const record = {
+      ts: new Date().toISOString(),
+      ...buildAuditEntry(entry),
+    }
+    yield* Effect.tryPromise({
+      try: async () => {
+        await mkdir(dirname(LOG_PATH), { recursive: true })
+        await appendFile(LOG_PATH, JSON.stringify(record) + "\n")
+      },
+      catch: (error) => error,
+    }).pipe(
+      Effect.catch((error) =>
+        Effect.sync(() => {
+          process.stderr.write(`[shodan:audit] ${String(error)}\n`)
+        }),
+      ),
+    )
+  })
 }
