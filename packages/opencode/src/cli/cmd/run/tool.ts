@@ -31,6 +31,7 @@ import type { SkillTool } from "@/tool/skill"
 import type { TaskTool } from "@/tool/task"
 import type { TodoWriteTool } from "@/tool/todo"
 import type { WebFetchTool } from "@/tool/webfetch"
+import { ShodanTool } from "@/tool/shodan"
 import { webSearchProviderLabel, type WebSearchTool } from "@/tool/websearch"
 import type { WriteTool } from "@/tool/write"
 import { LANGUAGE_EXTENSIONS } from "@/lsp/language"
@@ -108,6 +109,7 @@ type ToolDefs = {
   lsp: typeof LspTool
   webfetch: typeof WebFetchTool
   websearch: typeof WebSearchTool
+  shodan: typeof ShodanTool
   skill: typeof SkillTool
   plan_exit: typeof PlanExitTool
 }
@@ -360,6 +362,22 @@ function runWebSearch(p: ToolProps<typeof WebSearchTool>): ToolInline {
   return {
     icon: "◈",
     title: p.input.query ? `${title} "${p.input.query}"` : title,
+  }
+}
+
+function shodanTitle(p: Pick<ToolProps<typeof ShodanTool>, "input">): string {
+  const operation = p.input.operation ?? ""
+  if (p.input.ip) return `Shodan ${operation} ${p.input.ip}`
+  if (p.input.query) return `Shodan ${operation} "${p.input.query}"`
+  if (p.input.hostnames?.length) return `Shodan ${operation} ${p.input.hostnames.join(", ")}`
+  if (p.input.ips?.length) return `Shodan ${operation} ${p.input.ips.join(", ")}`
+  return operation ? `Shodan ${operation}` : "Shodan"
+}
+
+function runShodan(p: ToolProps<typeof ShodanTool>): ToolInline {
+  return {
+    icon: "◈",
+    title: shodanTitle(p),
   }
 }
 
@@ -919,6 +937,10 @@ function scrollWebSearchStart(p: ToolProps<typeof WebSearchTool>): string {
   return `◈ ${title} "${query}"`
 }
 
+function scrollShodanStart(p: ToolProps<typeof ShodanTool>): string {
+  return `◈ ${shodanTitle(p)}`
+}
+
 function permEdit(p: ToolPermissionProps<typeof EditTool>): ToolPermissionInfo {
   const input = p.input as { filePath?: string; filepath?: string; diff?: string }
   const file = input.filePath || input.filepath || p.patterns[0] || ""
@@ -1003,6 +1025,20 @@ function permWebSearch(p: ToolPermissionProps<typeof WebSearchTool>): ToolPermis
     icon: "◈",
     title: query ? `${title} "${query}"` : title,
     lines: query ? [`Query: ${query}`] : [],
+  }
+}
+
+function permShodan(p: ToolPermissionProps<typeof ShodanTool>): ToolPermissionInfo {
+  const title = shodanTitle(p)
+  const lines = [
+    p.input.operation ? `Operation: ${p.input.operation}` : "",
+    p.input.ip ? `IP: ${p.input.ip}` : "",
+    p.input.query ? `Query: ${p.input.query}` : "",
+  ].filter(Boolean)
+  return {
+    icon: "◈",
+    title,
+    lines,
   }
 }
 
@@ -1211,6 +1247,17 @@ const TOOL_RULES = {
       start: scrollWebSearchStart,
     },
     permission: permWebSearch,
+  },
+  shodan: {
+    view: {
+      output: false,
+      final: false,
+    },
+    run: runShodan,
+    scroll: {
+      start: scrollShodanStart,
+    },
+    permission: permShodan,
   },
   skill: {
     view: {

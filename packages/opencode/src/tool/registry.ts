@@ -27,10 +27,10 @@ import { Plugin } from "../plugin"
 import { Provider } from "@/provider/provider"
 
 import { WebSearchTool } from "./websearch"
+import { ShodanTool } from "./shodan"
 import { LspTool } from "./lsp"
 import * as Truncate from "./truncate"
 import { ApplyPatchTool } from "./apply_patch"
-import { ShodanTool } from "./shodan"
 import { Glob } from "@daemon-protocol/core/util/glob"
 import path from "path"
 import { pathToFileURL } from "url"
@@ -57,6 +57,10 @@ import { ModelV2 } from "@daemon-protocol/core/model"
 
 export function webSearchEnabled(providerID: ProviderV2.ID, flags = { exa: false, parallel: false }) {
   return providerID === ProviderV2.ID.opencode || flags.exa || flags.parallel
+}
+
+export function shodanEnabled() {
+  return Boolean(process.env.SHODAN_API_KEY)
 }
 
 type TaskDef = Tool.InferDef<typeof TaskTool>
@@ -100,6 +104,7 @@ export const layer = Layer.effect(
     const plan = yield* PlanExitTool
     const webfetch = yield* WebFetchTool
     const websearch = yield* WebSearchTool
+    const shodan = yield* ShodanTool
     const shell = yield* ShellTool
     const globtool = yield* GlobTool
     const writetool = yield* WriteTool
@@ -107,7 +112,6 @@ export const layer = Layer.effect(
     const greptool = yield* GrepTool
     const patchtool = yield* ApplyPatchTool
     const skilltool = yield* SkillTool
-    const shodantool = yield* ShodanTool
     const agent = yield* Agent.Service
 
     const state = yield* InstanceState.make<State>(
@@ -197,8 +201,6 @@ export const layer = Layer.effect(
 
         yield* config.get()
         const questionEnabled = ["app", "cli", "desktop"].includes(flags.client) || flags.enableQuestionTool
-        // ShodanTool is enabled only when SHODAN_API_KEY is present in the environment.
-        const shodanEnabled = Boolean(process.env["SHODAN_API_KEY"])
 
         const tool = yield* Effect.all({
           invalid: Tool.init(invalid),
@@ -212,12 +214,12 @@ export const layer = Layer.effect(
           fetch: Tool.init(webfetch),
           todo: Tool.init(todo),
           search: Tool.init(websearch),
+          shodan: Tool.init(shodan),
           skill: Tool.init(skilltool),
           patch: Tool.init(patchtool),
           question: Tool.init(question),
           lsp: Tool.init(lsptool),
           plan: Tool.init(plan),
-          shodan: Tool.init(shodantool),
         })
 
         return {
@@ -235,12 +237,11 @@ export const layer = Layer.effect(
             tool.fetch,
             tool.todo,
             tool.search,
+            ...(shodanEnabled() ? [tool.shodan] : []),
             tool.skill,
             tool.patch,
             ...(flags.experimentalLspTool ? [tool.lsp] : []),
             ...(flags.experimentalPlanMode && flags.client === "cli" ? [tool.plan] : []),
-            // Shodan: only included when SHODAN_API_KEY is set
-            ...(shodanEnabled ? [tool.shodan] : []),
           ],
           task: tool.task,
           read: tool.read,
@@ -276,6 +277,9 @@ export const layer = Layer.effect(
       const filtered = (yield* all()).filter((tool) => {
         if (tool.id === WebSearchTool.id) {
           return webSearchEnabled(input.providerID, { exa: flags.enableExa, parallel: flags.enableParallel })
+        }
+        if (tool.id === ShodanTool.id) {
+          return shodanEnabled()
         }
 
         const usePatch =
