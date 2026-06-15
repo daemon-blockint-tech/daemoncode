@@ -61,7 +61,7 @@ export function parseVariantReply(reply: string): { body: string; rationale?: st
   }
   // Fall back to a fenced code block, then to the raw reply.
   const fenced = reply.match(/```(?:markdown|md)?\n([\s\S]*?)```/)
-  if (fenced) return { body: fenced[1].trim(), rationale }
+  if (fenced?.[1]) return { body: fenced[1].trim(), rationale }
   return { body: reply.trim(), rationale }
 }
 

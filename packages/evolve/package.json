@@ -20,7 +20,7 @@
     "dist"
   ],
   "devDependencies": {
-    "@tsconfig/node22": "catalog:",
+    "@tsconfig/bun": "catalog:",
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "@typescript/native-preview": "catalog:"

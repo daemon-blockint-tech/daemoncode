@@ -58,7 +58,7 @@ export function parseProposal(reply: string): Proposal | undefined {
 
 function extractJson(text: string): string | undefined {
   const fenced = text.match(/```(?:json)?\n([\s\S]*?)```/)
-  const body = fenced ? fenced[1] : text
+  const body = fenced?.[1] ?? text
   const start = body.indexOf("{")
   const end = body.lastIndexOf("}")
   if (start === -1 || end === -1 || end < start) return undefined

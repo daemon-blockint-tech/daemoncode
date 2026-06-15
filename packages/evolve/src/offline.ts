@@ -4,7 +4,7 @@ import { failingTraces } from "./dataset.ts"
 
 function extractMarkdownBlock(prompt: string): string {
   const m = prompt.match(/```markdown\n([\s\S]*?)```/)
-  return (m ? m[1] : prompt).trim()
+  return (m?.[1] ?? prompt).trim()
 }
 
 /**

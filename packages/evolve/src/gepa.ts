@@ -62,7 +62,9 @@ export async function evolveSkill(input: EvolveInput): Promise<RunResult> {
     const proposed: EvaluatedCandidate[] = []
 
     for (let pIdx = 0; pIdx < parents.length; pIdx++) {
-      const parent = evaluatedById.get(parents[pIdx])!.candidate
+      const parentId = parents[pIdx]
+      if (!parentId) continue
+      const parent = evaluatedById.get(parentId)!.candidate
       const variants = await proposeVariants(parent, dataset, llm, {
         count: config.population,
         generation: gen,

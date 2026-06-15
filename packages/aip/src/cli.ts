@@ -28,9 +28,14 @@ function parseArgs(argv: string[]): Args {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
     if (a === "--mock") args.mock = true
-    else if (a === "--skill") args.skill = argv[++i]
-    else if (a === "--dataset") args.dataset = argv[++i]
-    else positional.push(a)
+    else if (a === "--skill") {
+      const v = argv[++i]
+      if (v) args.skill = v
+    } else if (a === "--dataset") {
+      const v = argv[++i]
+      if (v) args.dataset = v
+    }
+    else if (a) positional.push(a)
   }
   args.query = positional.join(" ")
   return args
