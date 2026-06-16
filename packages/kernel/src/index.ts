@@ -50,3 +50,4 @@ export { modelCheckGate, type ModelCheckResult } from "./model-check"
 // SIEM / Telemetry
 export { SqliteSiemSink, type SiemQuery, type SiemStats } from "./siem"
 export { renderStats, renderRecent, renderDashboard } from "./dashboard"
+export { SiemForwarder, teeSink, type SiemForwarderOptions, type SiemFormat } from "./siem-forward"
