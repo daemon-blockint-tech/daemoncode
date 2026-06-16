@@ -15,3 +15,5 @@ export type {
   PolicyBatchResponse,
   AppResponse,
 } from "./orion"
+export { createMcpExecutor } from "./router"
+export type { McpExecutorConfig } from "./router"

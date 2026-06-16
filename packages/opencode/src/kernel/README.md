@@ -82,9 +82,33 @@ bun test src/kernel/gate.test.ts
 - Kernel **always terminates** within global budget (no infinite loops for any planner)
 - Kernel **emits telemetry** for every turn (audit trail non-repudiation)
 
+## Real MCP Backends (Phase 5)
+
+The kernel gate runs SOP tools (`ares_scan_directory`, `ouroboros_scan`,
+`check_orion_policy`) against real backends when configured. Wiring lives in
+`backends.ts` and is driven by environment variables:
+
+| Env var | Effect |
+| --- | --- |
+| `DAEMON_ARES_BIN` | Path to `ares` binary; enables `ares_scan_directory` |
+| `DAEMON_OUROBOROS_BIN` | Path to `ouroboros` binary; enables `ouroboros_scan` |
+| `DAEMON_SCAN_ROOT` | Allowlisted scan root (default: cwd) |
+| `DAEMON_ORION_ADDR` | Orion hub address; the gRPC client is caller-supplied |
+
+`buildLiveExecutor()` returns a `ToolExecutor` only when at least one backend is
+configured; otherwise it returns `undefined` and the kernel falls back to its
+deterministic stub, so dev sessions work without scanners installed.
+
+**Graceful degradation:** an SOP tool with no configured backend returns
+`FAILURE` (never silently succeeds). Because the kernel treats an unsatisfied SOP
+as unable to clear the gate, a missing scanner can never be used to reach
+`PROCEED`. This preserves P1/P2 regardless of which backends are present.
+
+The Orion executor is **evaluation-only**: `HOLD`/`ROLLBACK` decisions map to
+`FAILURE`; it never deploys.
+
 ## Known Limitations
 
-- Executors use deterministic stub (returns SUCCESS for all allowed actions)
-- Real ARES/ouroboros/Orion backends integrated separately (Phase 5)
-- No real network calls in kernel context; tool boundary is mockable
+- gRPC transport for Orion is supplied by the caller (no bundled grpc dependency)
 - HITL escalation requires human in the loop (cannot auto-override)
+- When no backend is configured, the deterministic stub is used (dev fallback)

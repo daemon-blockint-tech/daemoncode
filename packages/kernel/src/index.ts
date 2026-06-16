@@ -16,6 +16,8 @@ export {
   createAresExecutor,
   createOuroborosExecutor,
   createOrionExecutor,
+  createMcpExecutor,
+  type McpExecutorConfig,
   type ProcessRunner,
   type ProcessResult,
   type AresExecutorOpts,

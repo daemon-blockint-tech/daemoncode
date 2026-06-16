@@ -12,11 +12,13 @@ import { EventV2Bridge } from "@/event-v2-bridge"
 import type { Interface } from "@daemon-protocol/core/event"
 import {
   runGateWithGuardedTools,
-  loadPolicy,
+  loadGate,
   createPolicyRecall,
   type IntentProposal,
   type TelemetryRow,
+  type ToolExecutor,
 } from "../../../kernel/src/index"
+import { buildLiveExecutor } from "./backends"
 
 export interface KernelGateInput {
   events: Interface
@@ -31,6 +33,12 @@ export interface KernelGateInput {
     always: string[]
     metadata: Record<string, unknown>
   }) => Effect.Effect<void, unknown>
+  /**
+   * Real MCP tool-boundary executor (ARES/ouroboros/Orion). When omitted, it is
+   * resolved from the environment; if no backend is configured the kernel falls
+   * back to its deterministic stub executor so dev sessions still function.
+   */
+  executor?: ToolExecutor
 }
 
 export interface KernelGateResult {
@@ -54,9 +62,12 @@ function createToolPlanner(tool: string): (history: unknown[]) => Promise<Intent
 export const gateToolWithKernel = Effect.fn("KernelGate.gateToolWithKernel")(
   function* (input: KernelGateInput): Effect.Effect<KernelGateResult, unknown> {
     // Load GATE_3 policy for remediation workflows
-    const policy = loadPolicy("GATE_3_REMEDIATION")
+    const policy = loadGate("GATE_3_REMEDIATION")
     const recall = createPolicyRecall(policy)
     const planner = createToolPlanner(input.tool)
+
+    // Real MCP tool-boundary executor; undefined → kernel uses its safe stub.
+    const executor = input.executor ?? buildLiveExecutor()
 
     // Session-scoped telemetry sink: emits kernel decisions to audit trail
     const traces: TelemetryRow[] = []
@@ -89,6 +100,7 @@ export const gateToolWithKernel = Effect.fn("KernelGate.gateToolWithKernel")(
         policy,
         recall,
         planner,
+        ...(executor ? { executor } : {}),
         initialHistory: input.conversationHistory,
         sink: telemetrySink,
       }),
