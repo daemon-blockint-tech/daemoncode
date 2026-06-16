@@ -9,3 +9,27 @@ export type { ToolExecutor, ExecutionResult } from "./executor"
 export { stubExecutor } from "./executor"
 export type { RunGateOptions } from "./kernel"
 export { runGateWithGuardedTools, applyViolationPenalty } from "./kernel"
+
+// MCP Executors
+export {
+  createBunProcessRunner,
+  createAresExecutor,
+  createOuroborosExecutor,
+  createOrionExecutor,
+  type ProcessRunner,
+  type ProcessResult,
+  type AresExecutorOpts,
+  type OuroborosExecutorOpts,
+  type OrionExecutorOpts,
+  type OrionHubClient,
+  type EvaluationBatchRequest,
+  type PolicyBatchResponse,
+  type AppResponse,
+  DeployDecision,
+} from "./mcp"
+
+// Gate Orchestration
+export { GATE_POLICIES, loadGate, runPipeline, type PipelineOpts, type PipelineResult } from "./gates"
+
+// Model Checking
+export { modelCheckGate, type ModelCheckResult } from "./model-check"

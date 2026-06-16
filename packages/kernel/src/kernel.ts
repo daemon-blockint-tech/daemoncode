@@ -119,7 +119,7 @@ export async function runGateWithGuardedTools(options: RunGateOptions): Promise<
         turn: registers.turn,
         action_schema: tool,
         enforcer_status: result.status,
-        network_emitted: result.networkEmitted,
+        network_emitted: result.networkEmitted ?? (result.status === "SUCCESS"),
       })
       if (result.status === "SUCCESS") {
         registers.r_gate = 0 // tactical reward: refresh the per-gate retry budget
