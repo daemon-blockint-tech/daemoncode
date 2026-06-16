@@ -54,3 +54,19 @@ The TypeScript files in `src/` provide two independent verification layers:
    - Verifies formal properties over the state space
 
 Both are runnable without external tools and make the proof machine-checkable in CI.
+
+## CI enforcement ("PRISM phase")
+
+Because PRISM binaries are unavailable in CI, the in-repo checkers are the
+CI-enforced equivalent of these PRISM/PCTL models. The `model-check` GitHub
+workflow (`.github/workflows/model-check.yml`) runs:
+
+```bash
+cd packages/kernel && bun run model-check   # src/model-check.cli.ts
+```
+
+over every gate policy (GATE_0..GATE_4), driving both `modelCheckGate`
+(explicit-state) and `verifyGate` (bounded-exhaustive). The build fails if any
+policy violates **P1** (no unsafe network emission) or **P2** (bounded
+termination). The PRISM/PCTL files here remain the human-readable specification;
+the CLI is their machine-checked counterpart and can also be run locally.

@@ -1,0 +1,41 @@
+name: model-check
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  model-check:
+    name: kernel model-check (P1/P2)
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Bun
+        uses: ./.github/actions/setup-bun
+
+      # PRISM binaries are unavailable in CI; the in-repo explicit-state model
+      # checker + bounded-exhaustive verifier are the CI-enforced equivalent of
+      # the PRISM/PCTL models in packages/kernel/verification/. This gate fails
+      # the build if any GATE_0..4 policy violates P1 (no unsafe network
+      # emission) or P2 (bounded termination).
+      - name: Run kernel model-check over all gate policies
+        timeout-minutes: 5
+        working-directory: packages/kernel
+        run: bun run model-check
