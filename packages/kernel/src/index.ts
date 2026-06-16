@@ -5,6 +5,17 @@ export type { TelemetrySink } from "./telemetry"
 export { BlackBoxRecorder, NdjsonFileSink } from "./telemetry"
 export type { CrystallineRecall, RecallResult } from "./crystalline"
 export { createPolicyRecall } from "./crystalline"
+export {
+  CrystallineMemory,
+  createCrystallineMemory,
+  type MemoryLayer,
+  type MemoryEntry,
+  type PrincipleMemory,
+  type SemioticLink,
+  type EpisodicMemory,
+  type CrystallineMemoryConfig,
+  type RichRecallResult,
+} from "./crystalline-memory"
 export type { ToolExecutor, ExecutionResult } from "./executor"
 export { stubExecutor } from "./executor"
 export type { RunGateOptions } from "./kernel"

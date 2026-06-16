@@ -1,6 +1,32 @@
 import { describe, test, expect } from "bun:test"
-import { gateForTool, isWriteOperation } from "./routing"
+import { gateForTool, isWriteOperation, canonicalizeTool } from "./routing"
 import { loadGate } from "../../../kernel/src/index"
+
+describe("Semiotic alias resolution (routing)", () => {
+  test("canonicalizes synonyms of forbidden actions", () => {
+    expect(canonicalizeTool("ship_to_production")).toBe("deploy_to_prod")
+    expect(canonicalizeTool("run_shell")).toBe("execute_bash")
+    expect(canonicalizeTool("destroy_resource")).toBe("delete_resource")
+  })
+
+  test("case/separator-insensitive resolution", () => {
+    expect(canonicalizeTool("Ship-To-Production")).toBe("deploy_to_prod")
+  })
+
+  test("unknown tools pass through unchanged", () => {
+    expect(canonicalizeTool("read_file")).toBe("read_file")
+  })
+
+  test("a synonym of a write op is classified as a write op", () => {
+    expect(isWriteOperation("ship_to_production")).toBe(true)
+    expect(isWriteOperation("run_shell")).toBe(true)
+  })
+
+  test("a synonym routes to the canonical action's gate", () => {
+    expect(gateForTool("ship_to_production")).toBe("GATE_4_VALIDATION")
+    expect(gateForTool("run_shell")).toBe("GATE_0_INGESTION")
+  })
+})
 
 describe("Tool → Gate Routing", () => {
   test("deployment tools route to GATE_4_VALIDATION", () => {

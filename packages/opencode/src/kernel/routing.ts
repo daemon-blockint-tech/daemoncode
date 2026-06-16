@@ -5,6 +5,22 @@
  * needs the routing logic, while index.ts re-exports the gate).
  */
 
+import { SEMIOTIC_LINKS } from "./semiotics"
+
+/** Alias → canonical action index, normalized for case/separator variants. */
+const ALIAS_INDEX = new Map<string, string>(
+  SEMIOTIC_LINKS.map((l) => [l.alias.toLowerCase().replace(/[\s-]+/g, "_"), l.canonical]),
+)
+
+/**
+ * Resolve a tool name through semiotic links to its canonical form. Ensures the
+ * write-operation classifier and gate router see the canonical action, so a
+ * synonym (e.g. "ship_to_production") cannot bypass the kernel gate entirely.
+ */
+export function canonicalizeTool(tool: string): string {
+  return ALIAS_INDEX.get(tool.toLowerCase().replace(/[\s-]+/g, "_")) ?? tool
+}
+
 /**
  * Write operation classification: tools that require kernel enforcement.
  * These are high-risk operations that mutate external state.
@@ -33,7 +49,8 @@ export const WRITE_OPERATIONS = new Set([
 ])
 
 export function isWriteOperation(tool: string): boolean {
-  return WRITE_OPERATIONS.has(tool)
+  // Resolve synonyms first so an alias of a write op cannot slip past the gate.
+  return WRITE_OPERATIONS.has(canonicalizeTool(tool))
 }
 
 /**
@@ -68,5 +85,5 @@ const TOOL_GATE_MAP: Record<string, string> = {
 
 /** Select the enforcing gate for a tool; defaults to GATE_3 (strictest). */
 export function gateForTool(tool: string): string {
-  return TOOL_GATE_MAP[tool] ?? "GATE_3_REMEDIATION"
+  return TOOL_GATE_MAP[canonicalizeTool(tool)] ?? "GATE_3_REMEDIATION"
 }

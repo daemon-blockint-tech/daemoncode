@@ -76,9 +76,20 @@ bun run typecheck
 
 See [`docs/trinity-fixtures.md`](./docs/trinity-fixtures.md) for the golden traces.
 
-## Roadmap (out of scope here)
+## Implemented beyond GATE_3
 
-Live-gate integration; real MCP executors for ARES/ouroboros/Orion; GATE_0/1/2/4;
-five-layer Crystalline memory + semiotic links; SQLite/SIEM telemetry sinks;
-running the PRISM model in CI (the model is provided; an in-repo exhaustive
-verifier already enforces the properties).
+- **Real MCP executors** for ARES/ouroboros/Orion (`src/mcp/`) + a routing
+  `createMcpExecutor` that degrades gracefully when a backend is absent.
+- **GATE_0–GATE_4** policies and a multi-gate `runPipeline` (`src/gates/`).
+- **Five-layer Crystalline memory + semiotic links** (`src/crystalline-memory.ts`)
+  defeating synonym-attacks in the memory layer (σ/Δ unchanged).
+- **SQLite SIEM sink + dashboard** (`src/siem.ts`, `src/dashboard.ts`) with a P1
+  unsafe-emission alarm.
+- **Explicit-state model checker** (`src/model-check.ts`) complementing the
+  bounded-exhaustive verifier.
+
+## Roadmap (still out of scope)
+
+Forwarding the SIEM to an external system (Splunk/Elastic); running the PRISM
+model in CI (the model is provided; the in-repo verifier + model checker already
+enforce the properties); learned/embedding-based semiotic links.

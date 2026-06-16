@@ -145,9 +145,32 @@ store for CLI/CI inspection, including a SECURITY ALERT banner on any P1
 violation. SIEM persistence is fire-and-forget and never blocks or affects
 enforcement — a sink failure cannot change a gate decision.
 
+## Crystalline Memory + Semiotic Links (Phase 7)
+
+The live gate uses the five-layer Crystalline memory (`createCrystallineMemory`)
+instead of plain policy recall. Semiotic links (`semiotics.ts`) map synonyms and
+paraphrases of forbidden actions to their canonical form, defeating
+**synonym-attacks** — a planner proposing `ship_to_production` instead of
+`deploy_to_prod` is resolved to the canonical forbidden action and blocked.
+
+Defense lives in the memory/semiotic layer; the kernel's σ/Δ transition function
+is unchanged. Resolution happens at two points:
+
+1. **Routing** (`canonicalizeTool`): `isWriteOperation`/`gateForTool` resolve
+   aliases first, so a synonym of a write op cannot bypass the gate entirely.
+2. **Recall** (`CrystallineMemory.recall`): if the queried action resolves to a
+   forbidden canonical, the alias itself is returned in `blockedActions`, so the
+   kernel's existing default-deny shield fires on the synonym.
+
+The five layers (episodic, semantic, procedural, analogical, principle) are
+defined in `@daemon-protocol/kernel`'s `crystalline-memory.ts`. PRINCIPLE
+memories carry `blockedActions`/`requiredSOP`; weak semiotic links lower recall
+confidence, feeding the optional pessimistic shield.
+
 ## Known Limitations
 
 - gRPC transport for Orion is supplied by the caller (no bundled grpc dependency)
 - HITL escalation requires human in the loop (cannot auto-override)
 - When no backend is configured, the deterministic stub is used (dev fallback)
 - SIEM store is local SQLite; forwarding to an external SIEM is a future step
+- Semiotic links are a curated table; learned/embedding-based links are future work

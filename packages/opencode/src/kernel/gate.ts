@@ -13,7 +13,7 @@ import type { Interface } from "@daemon-protocol/core/event"
 import {
   runGateWithGuardedTools,
   loadGate,
-  createPolicyRecall,
+  createCrystallineMemory,
   type IntentProposal,
   type TelemetryRow,
   type ToolExecutor,
@@ -21,6 +21,7 @@ import {
 } from "../../../kernel/src/index"
 import { buildLiveExecutor } from "./backends"
 import { gateForTool } from "./routing"
+import { SEMIOTIC_LINKS } from "./semiotics"
 
 export interface KernelGateInput {
   events: Interface
@@ -70,7 +71,9 @@ export const gateToolWithKernel = Effect.fn("KernelGate.gateToolWithKernel")(
   function* (input: KernelGateInput): Effect.Effect<KernelGateResult, unknown> {
     // Select the gate governing this tool (GATE_0-4); default-deny → GATE_3.
     const policy = loadGate(gateForTool(input.tool))
-    const recall = createPolicyRecall(policy)
+    // Five-layer Crystalline recall with semiotic links: resolves synonyms of
+    // forbidden actions to their canonical form so synonym-attacks are blocked.
+    const recall = createCrystallineMemory({ policy, semioticLinks: SEMIOTIC_LINKS })
     const planner = createToolPlanner(input.tool)
 
     // Real MCP tool-boundary executor; undefined → kernel uses its safe stub.
