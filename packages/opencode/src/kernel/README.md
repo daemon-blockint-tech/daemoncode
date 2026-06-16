@@ -107,8 +107,47 @@ as unable to clear the gate, a missing scanner can never be used to reach
 The Orion executor is **evaluation-only**: `HOLD`/`ROLLBACK` decisions map to
 `FAILURE`; it never deploys.
 
+## Multi-Gate Routing (Phase 6)
+
+Each write operation is enforced by the gate that governs its action class
+(`routing.ts`, `gateForTool`):
+
+| Tool class | Gate |
+| --- | --- |
+| `deploy_to_prod`, `deploy_to_staging`, `force_publish` | GATE_4_VALIDATION |
+| `trigger_pipeline`, `push_code` | GATE_2_CICD |
+| `execute_bash`, `execute_python`, `execute_sql` | GATE_0_INGESTION |
+| `modify_config`, `modify_database`, `delete_resource` | GATE_1_CONTEXT |
+| `remediate_vulnerability`, `apply_patch` | GATE_3_REMEDIATION |
+| (anything else) | GATE_3_REMEDIATION (default-deny) |
+
+The gate loads the matching policy from the kernel's gate registry, so each
+class has its own blocked actions, SOP tools, and retry budgets.
+
+## SIEM Telemetry (Phase 6)
+
+Kernel decisions persist to a durable, queryable SQLite store
+(`SqliteSiemSink` in `@daemon-protocol/kernel`) when `DAEMON_SIEM_DB` is set:
+
+| Env var | Effect |
+| --- | --- |
+| `DAEMON_SIEM_DB` | SQLite path for the audit store (`:memory:` for ephemeral) |
+
+The store is append-only (non-repudiation), indexed by gate/status/timestamp,
+and supports:
+- `query(filter)` — filter by gate, status, emitted-only, since-timestamp
+- `stats()` — aggregate counts for dashboards
+- `detectUnsafeEmissions(blockedActions)` — **P1 alarm**: any forbidden action
+  that emitted a packet (should always be empty for a correct kernel)
+
+A text dashboard (`renderDashboard`, `renderStats`, `renderRecent`) renders the
+store for CLI/CI inspection, including a SECURITY ALERT banner on any P1
+violation. SIEM persistence is fire-and-forget and never blocks or affects
+enforcement — a sink failure cannot change a gate decision.
+
 ## Known Limitations
 
 - gRPC transport for Orion is supplied by the caller (no bundled grpc dependency)
 - HITL escalation requires human in the loop (cannot auto-override)
 - When no backend is configured, the deterministic stub is used (dev fallback)
+- SIEM store is local SQLite; forwarding to an external SIEM is a future step

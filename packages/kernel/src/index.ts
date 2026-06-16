@@ -35,3 +35,7 @@ export { GATE_POLICIES, loadGate, runPipeline, type PipelineOpts, type PipelineR
 
 // Model Checking
 export { modelCheckGate, type ModelCheckResult } from "./model-check"
+
+// SIEM / Telemetry
+export { SqliteSiemSink, type SiemQuery, type SiemStats } from "./siem"
+export { renderStats, renderRecent, renderDashboard } from "./dashboard"

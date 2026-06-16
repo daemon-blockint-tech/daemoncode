@@ -24,6 +24,7 @@ import { EventV2Bridge } from "@/event-v2-bridge"
 import { ProviderV2 } from "@daemon-protocol/core/provider"
 import { ModelV2 } from "@daemon-protocol/core/model"
 import { gateToolWithKernel, isWriteOperation } from "@/kernel"
+import { getSiemSink } from "@/kernel/siem-store"
 
 export const resolve = Effect.fn("SessionTools.resolve")(function* (input: {
   agent: Agent.Info
@@ -130,6 +131,7 @@ export const resolve = Effect.fn("SessionTools.resolve")(function* (input: {
                       ruleset: Permission.merge(input.agent.permission, input.session.permission ?? []),
                     })
                     .pipe(Effect.orDie),
+                siem: getSiemSink(),
               })
 
               // Log kernel telemetry to session trace

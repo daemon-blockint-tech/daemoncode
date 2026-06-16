@@ -17,8 +17,10 @@ import {
   type IntentProposal,
   type TelemetryRow,
   type ToolExecutor,
+  type TelemetrySink,
 } from "../../../kernel/src/index"
 import { buildLiveExecutor } from "./backends"
+import { gateForTool } from "./routing"
 
 export interface KernelGateInput {
   events: Interface
@@ -39,6 +41,11 @@ export interface KernelGateInput {
    * back to its deterministic stub executor so dev sessions still function.
    */
   executor?: ToolExecutor
+  /**
+   * Optional durable SIEM sink (e.g. SqliteSiemSink). Kernel decisions are
+   * persisted here in addition to the session event stream, for audit/forensics.
+   */
+  siem?: TelemetrySink
 }
 
 export interface KernelGateResult {
@@ -61,8 +68,8 @@ function createToolPlanner(tool: string): (history: unknown[]) => Promise<Intent
 
 export const gateToolWithKernel = Effect.fn("KernelGate.gateToolWithKernel")(
   function* (input: KernelGateInput): Effect.Effect<KernelGateResult, unknown> {
-    // Load GATE_3 policy for remediation workflows
-    const policy = loadGate("GATE_3_REMEDIATION")
+    // Select the gate governing this tool (GATE_0-4); default-deny → GATE_3.
+    const policy = loadGate(gateForTool(input.tool))
     const recall = createPolicyRecall(policy)
     const planner = createToolPlanner(input.tool)
 
@@ -76,6 +83,14 @@ export const gateToolWithKernel = Effect.fn("KernelGate.gateToolWithKernel")(
     const telemetrySink = {
       append: (row: TelemetryRow) => {
         traces.push(row)
+        // Persist to durable SIEM store (fire-and-forget; never blocks the gate)
+        if (input.siem) {
+          try {
+            void input.siem.append(row)
+          } catch {
+            // SIEM persistence failure must not affect enforcement
+          }
+        }
         // Emit to session event stream for real-time audit (fire-and-forget)
         Promise.resolve().then(() => {
           eventBridge.emit({
@@ -118,7 +133,7 @@ export const gateToolWithKernel = Effect.fn("KernelGate.gateToolWithKernel")(
           patterns: [`kernel:${lastTrace?.action_schema ?? input.tool}`],
           always: [`kernel:${lastTrace?.action_schema ?? input.tool}`],
           metadata: {
-            gate: "GATE_3_REMEDIATION",
+            gate: policy.gate,
             enforcer_status: lastTrace?.enforcer_status,
             turn: lastTrace?.turn,
             reason: "Kernel blocked action: SOP tools may be required or action forbidden",
@@ -128,8 +143,9 @@ export const gateToolWithKernel = Effect.fn("KernelGate.gateToolWithKernel")(
         })
       })
 
+      const sopList = policy.sopTools.join(", ")
       return {
-        blocked: `Kernel GATE_3 enforcer: ${lastTrace?.enforcer_status ?? "BLOCKED"}. SOP tools (ares_scan_directory, ouroboros_scan) may be required before proceeding.`,
+        blocked: `Kernel ${policy.gate} enforcer: ${lastTrace?.enforcer_status ?? "BLOCKED"}. Mandatory SOP (${sopList}) may be required before proceeding.`,
         traces,
         finalStatus: result.status,
       }

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test"
-import { isWriteOperation, WRITE_OPERATIONS } from "./index"
+import { isWriteOperation, WRITE_OPERATIONS, gateForTool } from "./index"
 
 describe("Kernel Gate", () => {
   describe("Write Operation Classification", () => {
