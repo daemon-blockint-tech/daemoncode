@@ -17,7 +17,7 @@ console.log("🚀 Starting opencode server...")
 const opencode = await createDaemonCode({
   port: 0,
 })
-console.log("✅ Opencode server ready")
+console.log("✅ DaemonCode server ready")
 
 const sessions = new Map<string, { client: any; server: any; sessionId: string; channel: string; thread: string }>()
 void (async () => {
@@ -107,7 +107,7 @@ app.message(async ({ message, say }) => {
     body: { parts: [{ type: "text", text: message.text }] },
   })
 
-  console.log("📤 Opencode response:", JSON.stringify(result, null, 2))
+  console.log("📤 DaemonCode response:", JSON.stringify(result, null, 2))
 
   if (result.error) {
     console.error("❌ Failed to send message:", result.error)

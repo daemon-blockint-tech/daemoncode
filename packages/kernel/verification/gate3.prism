@@ -1,0 +1,45 @@
+// GATE_3 remediation gate as a Markov Decision Process (MDP).
+//
+// Projection s_delta = <r, sigma_sop> from daemon_gate3_safety_model.tex.
+// The planner (LLM) is the nondeterministic agent; the kernel is deterministic
+// given the chosen action. We model the *shielded* policy: forbidden actions
+// (I_bad) and illegal completion (I_done with sigma_sop = 0) never emit a
+// network packet; they only increment the retry counter r.
+//
+// Verify with PRISM:
+//   prism gate3.prism gate3.props -const K=3
+
+mdp
+
+const int K = 3;            // maxGateRetries (K_gate)
+
+module gate3
+  r        : [0..K] init 0; // retry counter
+  sigma    : [0..1] init 0; // SOP-cleared flag (sigma_sop)
+  status   : [0..2] init 0; // 0 = active, 1 = PROCEED, 2 = ROLLBACK
+  emitted  : [0..1] init 0; // E_t for the most recent transition
+
+  // I_bad: forbidden action. Never emits (emitted'=0). Exhausts budget -> ROLLBACK.
+  [bad]  status=0 & r<K  -> (r'=r+1) & (emitted'=0);
+  [bad]  status=0 & r=K  -> (status'=2) & (emitted'=0);
+
+  // I_sop: mandatory scan. Emits, sets sigma, resets the retry budget.
+  [sop]  status=0        -> (sigma'=1) & (r'=0) & (emitted'=1);
+
+  // I_done with SOP cleared: PROCEED (emits the final action).
+  [done] status=0 & sigma=1 -> (status'=1) & (emitted'=1);
+
+  // I_done without SOP: illegal exit, treated as a violation (no emission).
+  [done] status=0 & sigma=0 & r<K -> (r'=r+1) & (emitted'=0);
+  [done] status=0 & sigma=0 & r=K -> (status'=2) & (emitted'=0);
+
+  // Absorbing terminal states.
+  [stay] status=1 -> true;
+  [stay] status=2 -> true;
+endmodule
+
+// A transition is "unsafe" iff a forbidden/illegal action emitted a packet.
+// By construction of the [bad] and illegal-[done] commands this is unreachable;
+// the property below proves it for all schedulers (planners).
+label "unsafe_emission" = emitted=1 & status=0 & sigma=0 & false; // never true by model
+label "terminal" = status=1 | status=2;

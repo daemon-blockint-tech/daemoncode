@@ -20,6 +20,10 @@
     "@daemon-protocol/ui#test": {
       "dependsOn": ["^build"],
       "outputs": []
+    },
+    "@daemon-protocol/kernel#test": {
+      "dependsOn": [],
+      "outputs": []
     }
   }
 }

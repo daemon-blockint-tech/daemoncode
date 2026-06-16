@@ -10,17 +10,13 @@ import { Heap } from "@/cli/heap"
 import { AppRuntime } from "@/effect/app-runtime"
 import { Effect } from "effect"
 import { disposeAllInstancesAndEmitGlobalDisposed } from "@/server/global-lifecycle"
+import type { WorkerRpc } from "./rpc-types"
 
 Heap.start()
 
-// Subscribe to global events and forward them via RPC
-GlobalBus.on("event", (event) => {
-  Rpc.emit("global.event", event)
-})
-
 let server: Awaited<ReturnType<typeof Server.listen>> | undefined
 
-export const rpc = {
+export const rpc: WorkerRpc = {
   async fetch(input: { url: string; method: string; headers: Record<string, string>; body?: string }) {
     const headers = { ...input.headers }
     const auth = ServerAuth.header()
@@ -68,4 +64,9 @@ export const rpc = {
   },
 }
 
-Rpc.listen(rpc)
+if (typeof postMessage === "function") {
+  GlobalBus.on("event", (event) => {
+    Rpc.emit("global.event", event)
+  })
+  Rpc.listen(rpc)
+}

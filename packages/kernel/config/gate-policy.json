@@ -1,0 +1,13 @@
+{
+  "gate": "GATE_3_REMEDIATION",
+  "blockedActions": ["deploy_to_prod", "force_publish", "trigger_pipeline", "execute_bash"],
+  "sopTools": ["ares_scan_directory", "ouroboros_scan"],
+  "completionTool": "complete_gate_task",
+  "maxGateRetries": 3,
+  "maxGlobalRetries": 10,
+  "principles": [
+    "Do not allow production deployment of a Solana program when ARES reports an arbitrary-cpi vulnerability of HIGH or CRITICAL severity; deploy_to_prod must be blocked or escalated to explicit human approval.",
+    "Run the mandatory SOP scan (ares_scan_directory) before any gate completion."
+  ],
+  "confidenceThreshold": 0
+}

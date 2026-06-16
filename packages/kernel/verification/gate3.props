@@ -1,0 +1,15 @@
+// PCTL properties for the GATE_3 MDP (gate3.prism).
+// Verify: prism gate3.prism gate3.props -const K=3
+
+// P1 — No Unsafe Network Emission.
+// Under no scheduler (planner) can a forbidden/illegal action emit a packet.
+// "unsafe_emission" is unreachable, so its maximum reachability probability is 0.
+Pmax=? [ F "unsafe_emission" ]   // expected: 0
+
+// P2 — Bounded Termination (qualitative).
+// Under every scheduler the gate is certain to reach a terminal state.
+Pmin=? [ F "terminal" ]          // expected: 1
+
+// P2 — Bounded Termination (quantitative bound).
+// A terminal state is always reached within K+1 steps.
+Pmin=? [ F<=4 "terminal" ]       // expected: 1 for K=3

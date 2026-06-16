@@ -1,6 +1,6 @@
 import { cmd } from "@/cli/cmd/cmd"
 import { Rpc } from "@/util/rpc"
-import { type rpc } from "../tui/worker"
+import type { WorkerRpc } from "../tui/rpc-types"
 import path from "path"
 import { fileURLToPath } from "url"
 import { UI } from "@/cli/ui"
@@ -18,7 +18,7 @@ declare global {
   const OPENCODE_WORKER_PATH: string
 }
 
-type RpcClient = ReturnType<typeof Rpc.client<typeof rpc>>
+type RpcClient = ReturnType<typeof Rpc.client<WorkerRpc>>
 
 function createWorkerFetch(client: RpcClient): typeof fetch {
   const fn = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
@@ -127,7 +127,7 @@ export const TuiThreadCommand = cmd({
       const cwd = Filesystem.resolve(process.cwd())
 
       const worker = new Worker(file)
-      const client = Rpc.client<typeof rpc>(worker)
+      const client = Rpc.client<WorkerRpc>(worker)
       const reload = () => {
         client.call("reload", undefined).catch(() => {})
       }
