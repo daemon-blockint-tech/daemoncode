@@ -7,7 +7,8 @@
   "description": "Deterministic shielded kernel for the GATE_3 remediation gate (Daemon Protocol)",
   "scripts": {
     "typecheck": "tsgo --noEmit",
-    "test": "bun test"
+    "test": "bun test",
+    "model-check": "bun src/model-check.cli.ts"
   },
   "exports": {
     ".": "./src/index.ts"
