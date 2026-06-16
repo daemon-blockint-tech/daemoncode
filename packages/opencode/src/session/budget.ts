@@ -52,8 +52,9 @@ export interface Interface {
 export class Service extends Context.Service<Service, Interface>()("@opencode/Budget") {}
 
 export function readSettings(experimental: unknown): Settings {
-  const b = (experimental as { budget?: Record<string, unknown> } | undefined)?.budget
-  const b = (experimental as any)?.budget
+  const b = (experimental as { budget?: Record<string, unknown> } | undefined)?.budget as
+    | Record<string, unknown>
+    | undefined
   if (!b) return { warnAt: DEFAULT_WARN_AT, onExceed: "stop" }
   const usd = typeof b.usd === "number" && b.usd > 0 && Number.isFinite(b.usd) ? b.usd : undefined
   const warnAt = Array.isArray(b.warn_at)

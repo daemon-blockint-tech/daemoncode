@@ -167,10 +167,31 @@ defined in `@daemon-protocol/kernel`'s `crystalline-memory.ts`. PRINCIPLE
 memories carry `blockedActions`/`requiredSOP`; weak semiotic links lower recall
 confidence, feeding the optional pessimistic shield.
 
+## External SIEM Forwarding (Phase 8)
+
+Kernel decisions can be shipped to an external SIEM in addition to (or instead
+of) the local SQLite store. `siem-store.ts` composes destinations via `teeSink`,
+driven by environment variables:
+
+| Env var | Effect |
+| --- | --- |
+| `DAEMON_SIEM_DB` | Durable local SQLite audit store |
+| `DAEMON_SIEM_FORWARD_URL` | External SIEM endpoint (enables forwarding) |
+| `DAEMON_SIEM_FORWARD_FORMAT` | `splunk-hec` (default) or `elastic-bulk` |
+| `DAEMON_SIEM_FORWARD_TOKEN` | Splunk HEC token / Elastic API key |
+| `DAEMON_SIEM_FORWARD_INDEX` | Elasticsearch index (default `daemon-kernel`) |
+
+The forwarder (`SiemForwarder` in `@daemon-protocol/kernel`) batches rows and
+flushes by size or interval, retries transient failures with backoff, and drops
+a batch after `maxRetries` rather than ever blocking enforcement. It is built on
+the global `fetch` (no new dependency). Forwarding is fire-and-forget — a SIEM
+outage can never affect a gate decision. When both env vars are set, decisions
+are tee'd to the durable store **and** forwarded.
+
 ## Known Limitations
 
 - gRPC transport for Orion is supplied by the caller (no bundled grpc dependency)
 - HITL escalation requires human in the loop (cannot auto-override)
 - When no backend is configured, the deterministic stub is used (dev fallback)
-- SIEM store is local SQLite; forwarding to an external SIEM is a future step
+- SIEM forwarding is store-and-drop on persistent failure (no on-disk spool/replay)
 - Semiotic links are a curated table; learned/embedding-based links are future work
