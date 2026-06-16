@@ -23,6 +23,8 @@ import { EffectBridge } from "@/effect/bridge"
 import { EventV2Bridge } from "@/event-v2-bridge"
 import { ProviderV2 } from "@daemon-protocol/core/provider"
 import { ModelV2 } from "@daemon-protocol/core/model"
+import { gateToolWithKernel, isWriteOperation } from "@/kernel"
+import { getSiemSink } from "@/kernel/siem-store"
 
 export const resolve = Effect.fn("SessionTools.resolve")(function* (input: {
   agent: Agent.Info
@@ -110,6 +112,50 @@ export const resolve = Effect.fn("SessionTools.resolve")(function* (input: {
         return run.promise(
           Effect.gen(function* () {
             const ctx = context(args, options)
+
+            // Kernel gate: shielded enforcement for write operations (GATE_3)
+            if (isWriteOperation(item.id)) {
+              const kernelResult = yield* gateToolWithKernel({
+                events: events,
+                sessionID: input.session.id,
+                tool: item.id,
+                callID: options.toolCallId,
+                messageID: input.processor.message.id,
+                conversationHistory: input.messages,
+                ask: (req) =>
+                  permission
+                    .ask({
+                      ...req,
+                      sessionID: input.session.id,
+                      tool: { messageID: input.processor.message.id, callID: options.toolCallId },
+                      ruleset: Permission.merge(input.agent.permission, input.session.permission ?? []),
+                    })
+                    .pipe(Effect.orDie),
+                siem: getSiemSink(),
+              })
+
+              // Log kernel telemetry to session trace
+              yield* plugin.trigger(
+                "kernel.gate.evaluated",
+                {
+                  tool: item.id,
+                  sessionID: input.session.id,
+                  callID: options.toolCallId,
+                  status: kernelResult.finalStatus,
+                },
+                { traces: kernelResult.traces },
+              )
+
+              if (kernelResult.blocked) {
+                return {
+                  title: item.id,
+                  metadata: { kernel: { blocked: true, status: kernelResult.finalStatus } },
+                  output: kernelResult.blocked,
+                }
+              }
+            }
+
+            // ACE gate: existing permission/escalation logic
             const blocked = yield* gate({ tool: item.id, ctx })
             if (blocked) {
               return {

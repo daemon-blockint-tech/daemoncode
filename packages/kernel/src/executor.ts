@@ -10,7 +10,9 @@ import type { IntentProposal } from "./types"
 export interface ExecutionResult {
   status: "SUCCESS" | "FAILURE"
   /** Whether a physical network packet was emitted (E_t for the safe path). */
-  networkEmitted: boolean
+  networkEmitted?: boolean
+  /** Optional execution summary (findings count, scan status, policy decision). */
+  summary?: string
 }
 
 export interface ToolExecutor {
