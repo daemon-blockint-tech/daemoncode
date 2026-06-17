@@ -1,0 +1,12 @@
+[package]
+name = "exposure-test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# This is a known-vulnerable package (for demonstration in exposure scanning)
+log = "0.4.6"
+
+[[bin]]
+name = "exposure-test"
+path = "main.rs"
