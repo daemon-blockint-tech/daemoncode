@@ -107,6 +107,66 @@ as unable to clear the gate, a missing scanner can never be used to reach
 The Orion executor is **evaluation-only**: `HOLD`/`ROLLBACK` decisions map to
 `FAILURE`; it never deploys.
 
+## End-to-end (real backends) (Phase 5)
+
+The kernel's MCP executors are validated against the real ARES and ouroboros CLI
+binaries via an opt-in e2e harness (`packages/kernel/test/e2e/backends.e2e.test.ts`).
+This ensures no contract drift between assumed and actual CLI behavior. The harness
+is skipped by default in normal test runs and only executes when explicitly enabled.
+
+### Local end-to-end testing
+
+Build the real binaries and set environment variables:
+
+```bash
+# Build ouroboros (Go)
+cd ../ouroboros
+go build -o /tmp/ouroboros ./cmd/ouroboros
+
+# Build ARES (Rust, ~2–3 minutes)
+cd ../ares-v3
+cargo build --release -p ares-v3
+# Binary is at ./target/release/ares-v3 or ./target/release/ares
+
+# Run e2e tests with real backends
+cd ../daemoncode
+DAEMON_E2E_BACKENDS=1 \
+  DAEMON_OUROBOROS_BIN=/tmp/ouroboros \
+  DAEMON_ARES_BIN=../ares-v3/target/release/ares-v3 \
+  DAEMON_SCAN_ROOT=/tmp \
+  bun --cwd packages/kernel test test/e2e/backends.e2e.test.ts
+```
+
+The harness tests:
+- **ouroboros**: clean scan → `SUCCESS`; incomplete scan (no `scan_summary`) → `FAILURE`; blocking findings → `FAILURE`; promotion rule (findings before `scan_summary` ignored)
+- **ARES**: scans a fixture program; exposes any contract drift in CLI flags or output file paths, triggering reconciliation in `packages/kernel/src/mcp/ares.ts` if needed
+
+### GitHub Actions (manual dispatch)
+
+Trigger the opt-in workflow via GitHub's Actions UI:
+
+```bash
+# In the daemoncode repo, go to Actions → E2E Real Backends → Run workflow
+# Select "build_ares: true" to include ARES build (optional, Rust toolchain ~3m)
+```
+
+The workflow:
+- Checks out and builds ouroboros + optionally ARES
+- Exports binary paths via env vars
+- Runs the e2e test suite with `DAEMON_E2E_BACKENDS=1`
+- Skips tests for unconfigured backends (graceful degradation)
+
+### Contract drift reconciliation
+
+If the e2e harness reports a parse or file-not-found error for ARES, it indicates
+contract drift. Update `packages/kernel/src/mcp/ares.ts`:
+
+1. Change CLI args from `["-o", file]` to `["--output", outputDir]`
+2. Glob the output directory for `ares-report-*-report.json` (real ARES auto-names reports)
+3. Update `packages/kernel/src/mcp/ares.test.ts` mock expectations
+
+The SUCCESS/FAILURE semantics (block on Critical/High) remain unchanged.
+
 ## Multi-Gate Routing (Phase 6)
 
 Each write operation is enforced by the gate that governs its action class

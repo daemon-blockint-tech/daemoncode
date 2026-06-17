@@ -1,0 +1,91 @@
+name: E2E Real Backends
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_ares:
+        description: "Build and test ARES (requires Rust toolchain, ~2–3m)"
+        required: false
+        default: "false"
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-ouroboros:
+    name: E2E Real Backend (Ouroboros)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout daemoncode
+        uses: actions/checkout@v4
+        with:
+          repository: daemon-blockint-tech/daemoncode
+          path: daemoncode
+
+      - name: Checkout ouroboros
+        uses: actions/checkout@v4
+        with:
+          repository: daemon-blockint-tech/ouroboros
+          path: ouroboros
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Build ouroboros
+        run: |
+          cd ouroboros
+          go build -o /tmp/ouroboros ./cmd/ouroboros
+          /tmp/ouroboros --version
+
+      - name: Run e2e tests (Ouroboros)
+        working-directory: daemoncode
+        env:
+          DAEMON_E2E_BACKENDS: "1"
+          DAEMON_OUROBOROS_BIN: /tmp/ouroboros
+          DAEMON_SCAN_ROOT: /tmp
+        run: |
+          bun --cwd packages/kernel test test/e2e/backends.e2e.test.ts
+
+  e2e-ares:
+    name: E2E Real Backend (ARES)
+    runs-on: ubuntu-latest
+    if: ${{ inputs.build_ares }}
+    steps:
+      - name: Checkout daemoncode
+        uses: actions/checkout@v4
+        with:
+          repository: daemon-blockint-tech/daemoncode
+          path: daemoncode
+
+      - name: Checkout ARES
+        uses: actions/checkout@v4
+        with:
+          repository: daemon-blockint-tech/ares-v3
+          path: ares-v3
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build ARES
+        run: |
+          cd ares-v3
+          cargo build --release -p ares-v3
+          ./target/release/ares-v3 --version || ./target/release/ares --version
+
+      - name: Run e2e tests (ARES)
+        working-directory: daemoncode
+        env:
+          DAEMON_E2E_BACKENDS: "1"
+          DAEMON_ARES_BIN: /home/runner/work/daemoncode/ares-v3/target/release/ares-v3
+          DAEMON_SCAN_ROOT: /tmp
+        run: |
+          bun --cwd packages/kernel test test/e2e/backends.e2e.test.ts
