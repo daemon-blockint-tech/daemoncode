@@ -9,6 +9,9 @@ on:
         default: "false"
         type: boolean
 
+permissions:
+  contents: read
+
 jobs:
   e2e-ouroboros:
     name: E2E Real Backend (Ouroboros)
