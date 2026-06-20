@@ -114,3 +114,50 @@ describe("Dashboard", () => {
     sink.close()
   })
 })
+
+describe("Audit Log Export", () => {
+  test("exports as NDJSON", () => {
+    const sink = new SqliteSiemSink()
+    sink.append(row({ action_schema: "tool_a" }))
+    sink.append(row({ action_schema: "tool_b" }))
+
+    const lines = sink.exportAuditLog({ format: "ndjson" })
+    expect(lines).toHaveLength(2)
+    const parsed = JSON.parse(lines[0])
+    expect(parsed.action_schema).toBeTruthy()
+    sink.close()
+  })
+
+  test("exports as CSV with header", () => {
+    const sink = new SqliteSiemSink()
+    sink.append(row({ action_schema: "tool_a" }))
+
+    const lines = sink.exportAuditLog({ format: "csv" })
+    expect(lines[0]).toBe("gate,turn,action_schema,enforcer_status,network_emitted,timestamp")
+    expect(lines).toHaveLength(2) // header + 1 row
+    sink.close()
+  })
+
+  test("exports as JSON array", () => {
+    const sink = new SqliteSiemSink()
+    sink.append(row({ action_schema: "tool_a" }))
+
+    const lines = sink.exportAuditLog({ format: "json" })
+    expect(lines).toHaveLength(1)
+    const parsed = JSON.parse(lines[0])
+    expect(Array.isArray(parsed)).toBe(true)
+    expect(parsed).toHaveLength(1)
+    sink.close()
+  })
+
+  test("filters by gate and since", () => {
+    const sink = new SqliteSiemSink()
+    sink.append(row({ gate: "GATE_0_INGESTION", action_schema: "tool_a" }))
+    sink.append(row({ gate: "GATE_3_REMEDIATION", action_schema: "tool_b" }))
+
+    const lines = sink.exportAuditLog({ format: "ndjson", gate: "GATE_0_INGESTION" })
+    expect(lines).toHaveLength(1)
+    expect(JSON.parse(lines[0]).gate).toBe("GATE_0_INGESTION")
+    sink.close()
+  })
+})

@@ -111,6 +111,11 @@ export class CrystallineMemory implements CrystallineRecall {
     }
   }
 
+  /** Register a new semiotic link after construction (e.g. runtime policy update). */
+  addSemioticLink(link: SemioticLink): void {
+    this.aliasIndex.set(normalize(link.alias), link)
+  }
+
   /** Resolve a token through semiotic links to its canonical action (1 hop). */
   private resolve(action: string): { canonical: string; link?: SemioticLink } {
     const link = this.aliasIndex.get(normalize(action))

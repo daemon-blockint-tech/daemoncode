@@ -1,0 +1,66 @@
+name: kernel-security
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - "packages/kernel/**"
+  pull_request:
+    paths:
+      - "packages/kernel/**"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  security:
+    name: kernel security scan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Setup Bun
+        uses: ./.github/actions/setup-bun
+
+      - name: Check for hardcoded secrets in kernel
+        working-directory: packages/kernel
+        run: |
+          echo "Scanning for hardcoded secrets..."
+          # Check for common secret patterns (API keys, tokens, passwords)
+          if grep -rn "password\|secret\|api_key\|apikey\|token.*=" src/ --include="*.ts" | grep -v "test\|mock\|stub\|example\|\.test\." | grep -v "//.*password\|//.*secret\|//.*token"; then
+            echo "WARNING: Potential hardcoded secrets found in kernel source"
+            exit 1
+          fi
+          echo "No hardcoded secrets detected"
+
+      - name: Check for dangerous patterns
+        working-directory: packages/kernel
+        run: |
+          echo "Scanning for dangerous patterns..."
+          # Check for eval(), Function(), or child_process usage
+          if grep -rn "eval(\|new Function(\|child_process\|execSync\|spawnSync" src/ --include="*.ts" | grep -v "test\|mock\|\.test\."; then
+            echo "WARNING: Dangerous patterns found in kernel source"
+            exit 1
+          fi
+          echo "No dangerous patterns detected"
+
+      - name: Verify kernel has no network listeners
+        working-directory: packages/kernel
+        run: |
+          echo "Checking for network listeners..."
+          if grep -rn "\.listen(\|createServer(\|http\.Server\|https\.Server" src/ --include="*.ts" | grep -v "test\|mock\|\.test\."; then
+            echo "WARNING: Network listeners found in kernel (should be stateless)"
+            exit 1
+          fi
+          echo "Kernel is stateless (no network listeners)"

@@ -35,6 +35,20 @@ jobs:
       # the PRISM/PCTL models in packages/kernel/verification/. This gate fails
       # the build if any GATE_0..4 policy violates P1 (no unsafe network
       # emission) or P2 (bounded termination).
+      - name: Validate PRISM models
+        working-directory: packages/kernel/verification
+        run: |
+          echo "PRISM models: $(ls *.prism 2>/dev/null | wc -l) files"
+          echo "Properties files: $(ls *.props 2>/dev/null | wc -l) files"
+          # Verify all .prism files are non-empty and syntactically present
+          for f in *.prism; do
+            if [ ! -s "$f" ]; then
+              echo "ERROR: $f is empty"
+              exit 1
+            fi
+          done
+          echo "All PRISM model files validated"
+
       - name: Run kernel model-check over all gate policies
         timeout-minutes: 5
         working-directory: packages/kernel

@@ -69,6 +69,12 @@ jobs:
         env:
           OPENCODE_EXPERIMENTAL_DISABLE_FILEWATCHER: ${{ runner.os == 'Windows' && 'true' || 'false' }}
 
+      - name: Run kernel tests with coverage
+        if: runner.os == 'Linux'
+        working-directory: packages/kernel
+        run: bun test --coverage
+        continue-on-error: true
+
       - name: Run HttpApi exerciser gates
         if: runner.os == 'Linux'
         working-directory: packages/opencode

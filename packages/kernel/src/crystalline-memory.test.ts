@@ -75,6 +75,22 @@ describe("Crystalline Memory", () => {
     expect(r.memories.some((m) => m.layer === "episodic")).toBe(true)
     expect(r.principles.some((p) => p.includes("Precedent"))).toBe(true)
   })
+
+  test("addSemioticLink registers new alias after construction", async () => {
+    const mem = createCrystallineMemory({ policy })
+
+    // Initially, this alias is unknown
+    const before = await mem.recall("ship_to_production")
+    expect(before.blockedActions).not.toContain("ship_to_production")
+
+    // Add link at runtime
+    mem.addSemioticLink({ alias: "ship_to_production", canonical: "deploy_to_prod", relation: "synonym" })
+
+    // Now it resolves to blocked
+    const after = await mem.recall("ship_to_production")
+    expect(after.blockedActions).toContain("ship_to_production")
+    expect(after.resolvedCanonical).toBe("deploy_to_prod")
+  })
 })
 
 describe("Crystalline Memory + Kernel (synonym-attack regression)", () => {

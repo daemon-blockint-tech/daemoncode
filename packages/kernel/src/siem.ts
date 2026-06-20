@@ -150,6 +150,37 @@ export class SqliteSiemSink implements TelemetrySink {
     this.db.close()
   }
 
+  /**
+   * Export traces in structured format for compliance (SOC 2 / ISO 27001).
+   * Yields lines of JSON, CSV, or NDJSON for streaming to a file or pipe.
+   */
+  exportAuditLog(opts: {
+    format: "json" | "csv" | "ndjson"
+    since?: string
+    gate?: string
+  }): string[] {
+    const filter: SiemQuery = {}
+    if (opts.since) filter.since = opts.since
+    if (opts.gate) filter.gate = opts.gate
+    const rows = this.query(filter)
+
+    if (opts.format === "ndjson") {
+      return rows.map((r) => JSON.stringify(r))
+    }
+
+    if (opts.format === "csv") {
+      const header = "gate,turn,action_schema,enforcer_status,network_emitted,timestamp"
+      const lines = rows.map(
+        (r) =>
+          `${r.gate},${r.turn},${r.action_schema},${r.enforcer_status},${r.network_emitted},${r.timestamp}`,
+      )
+      return [header, ...lines]
+    }
+
+    // JSON format
+    return [JSON.stringify(rows, null, 2)]
+  }
+
   private toRow = (r: Record<string, unknown>): TelemetryRow => ({
     gate: r.gate as string,
     turn: r.turn as number,

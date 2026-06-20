@@ -30,13 +30,14 @@ export class BlackBoxRecorder {
 /**
  * Append-only NDJSON sink (one JSON object per line). Resilient default for
  * durable traces without a database dependency.
+ *
+ * Uses Bun.write with append mode for O(1) per row (was O(n) read+rewrite).
  */
 export class NdjsonFileSink implements TelemetrySink {
   constructor(private readonly path: string) {}
 
   async append(row: TelemetryRow): Promise<void> {
-    const file = Bun.file(this.path)
-    const prev = (await file.exists()) ? await file.text() : ""
-    await Bun.write(this.path, prev + JSON.stringify(row) + "\n")
+    const line = JSON.stringify(row) + "\n"
+    await Bun.write(this.path, line, { append: true })
   }
 }

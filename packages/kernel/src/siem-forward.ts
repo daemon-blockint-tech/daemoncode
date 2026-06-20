@@ -156,20 +156,19 @@ export class SiemForwarder implements TelemetrySink {
     return h
   }
 
-  /** Encode a batch into the target SIEM wire format. */
+  /** Encode a batch into the target SIEM wire format. Uses string builder to avoid intermediate arrays. */
   private encode(batch: TelemetryRow[]): { body: string; contentType: string } {
     if (this.opts.format === "splunk-hec") {
-      // Splunk HEC: newline-delimited JSON, each wrapped in an "event" envelope.
-      const body = batch
-        .map((row) => JSON.stringify({ event: row, sourcetype: "daemon:kernel", source: row.gate }))
-        .join("\n")
+      let body = ""
+      for (const row of batch) {
+        body += JSON.stringify({ event: row, sourcetype: "daemon:kernel", source: row.gate }) + "\n"
+      }
       return { body, contentType: "application/json" }
     }
-    // Elasticsearch _bulk: action line + document line, newline-delimited.
-    const body =
-      batch
-        .map((row) => `${JSON.stringify({ index: { _index: this.opts.index } })}\n${JSON.stringify(row)}`)
-        .join("\n") + "\n"
+    let body = ""
+    for (const row of batch) {
+      body += JSON.stringify({ index: { _index: this.opts.index } }) + "\n" + JSON.stringify(row) + "\n"
+    }
     return { body, contentType: "application/x-ndjson" }
   }
 }
